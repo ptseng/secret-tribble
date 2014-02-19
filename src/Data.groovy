@@ -1,16 +1,16 @@
 
 
 // key/value pair for record storage
-class Data {
+class Data<K,V> {
 
-    private def int key;
-    private def Object value;
+    private def K key;
+    private def V value;
 
     public static void main ( String [] args ) {
 
     }
 
-    public Data ( k = -1, v = null ) {
+    public Data ( k = null, v = null ) {
         key = k
         value = v
     }
