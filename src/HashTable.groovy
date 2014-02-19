@@ -55,9 +55,25 @@ public class HashTable
         int index = Hash(key)
 
         if(hashtable[index] == null)
+        {
             hashtable[index] = new LinkedList<Data>()
+        }
         else
+        {
+            def iter = hashtable[index].iterator()
+
+            while(iter.hasNext())
+            {
+                //The key already exists in the table
+                /**
+                 * TODO Return something meaningful when entering duplicate key
+                 */
+                if(iter.next().matchKey(key))
+                    return
+            }
+
             collisions += 1
+        }
 
         hashtable[index].addFirst(d)
         size += 1
@@ -72,19 +88,18 @@ public class HashTable
      */
     public boolean ContainsKey(Object key)
     {
-        def d
-
         def index = Hash(key)
 
         if(hashtable[index] != null)
-            while([index].iterator().hasNext())
+        {
+            def iter = hashtable[index].iterator()
+
+            while(iter.hasNext())
             {
-                d = hashtable[index].iterator().next()
-
-                if(d.matchKey(key))
+                if(iter.next().matchKey(key))
                     return true
-
             }
+        }
 
         return false
     }
@@ -102,10 +117,11 @@ public class HashTable
         {
             if(l != null && l.head().value.equals(value))
                 return true
+            def iter = l.iterator()
 
-            while(l.iterator().hasNext())
+            while(iter.hasNext())
             {
-                if(l.iterator().next().value.equals(value))
+                if(iter.next().value.equals(value))
                     return true
             }
         }
@@ -197,7 +213,6 @@ public class HashTable
         assert ht.NumberOfCollisions() == 0
 
         assert ht.IsEmpty() == true
-
 
 
         def hasht = new HashTable(333)
