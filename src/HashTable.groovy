@@ -7,7 +7,7 @@ import java.util.*
 public class HashTable
 {
 
-    private LinkedList<String> [] hashtable
+    private LinkedList<Data> [] hashtable
 
     private int size
 
@@ -21,7 +21,7 @@ public class HashTable
      */
     public HashTable()
     {
-        hashtable  =  new  LinkedList<String> [(buckets+1)]
+        hashtable  =  new  LinkedList<Data> [(buckets+1)]
         size = 0
         collisions = 0
     }
@@ -35,29 +35,31 @@ public class HashTable
     {
         buckets = b
 
-        hashtable  =  new  LinkedList<String> [(buckets+1)]
+        hashtable  =  new  LinkedList<Data> [(buckets+1)]
         size = 0
         collisions = 0
     }
 
     /**
-     * Adds a value of type String to the Hashtable
+     * Adds a value of type Object to the Hashtable
      * If a collision occurs the value is added at
      * the head of the Linked List
      *
-     * @param key  String
-     * @param value  String
+     * @param key  Object
+     * @param value  Object
      */
-    public void Insert(String key, String value)
+    public void Insert(Object key, Object value)
     {
-        int k = Hash(key);
+        def d = new Data(key, value)
 
-        if(hashtable[k] == null)
-            hashtable[k] = new LinkedList<String>()
+        int index = Hash(key)
+
+        if(hashtable[index] == null)
+            hashtable[index] = new LinkedList<Data>()
         else
             collisions += 1
 
-        hashtable[k].addFirst(value)
+        hashtable[index].addFirst(d)
         size += 1
     }
 
@@ -65,15 +67,24 @@ public class HashTable
      *  Return true if a given key is present in the
      *  HashTable and false if not
      *
-     * @param key String
+     * @param key Object
      * @return  true if key is in the HashTable
      */
-    public boolean ContainsKey(String key)
+    public boolean ContainsKey(Object key)
     {
-        int k = Hash(key)
+        def d
 
-        if(hashtable[k] != null)
-            return true
+        def index = Hash(key)
+
+        if(hashtable[index] != null)
+            while([index].iterator().hasNext())
+            {
+                d = hashtable[index].iterator().next()
+
+                if(d.matchKey(key))
+                    return true
+
+            }
 
         return false
     }
@@ -82,19 +93,21 @@ public class HashTable
      * Return true if a given value is present in
      * the hashtable and false if not
      *
-     * @param value  String
+     * @param value  Object
      * @return  boolean
      */
-    public boolean ContainsValue(String value)
+    public boolean ContainsValue(Object value)
     {
-        for(LinkedList<String> l : hashtable)
+        for(LinkedList<Data> l : hashtable)
         {
-            if(l != null)
-                for(String s : l)
-                {
-                    if(s.equals(value))
-                        return true
-                }
+            if(l != null && l.head().value.equals(value))
+                return true
+
+            while(l.iterator().hasNext())
+            {
+                if(l.iterator().next().value.equals(value))
+                    return true
+            }
         }
 
         return false
@@ -129,7 +142,7 @@ public class HashTable
 
 
     /**
-     * Hashes a given key using String.hashCode()
+     * Hashes a given key using Object.hashCode()
      * and mods it against the number of buckets
      *
      * This will be a basic test to compare
@@ -137,10 +150,11 @@ public class HashTable
      * functions
      *
      * @see #hashCode()
-     * @param key String
-     * @return
+     * @param key Object
+     *
+     * @return int   An index of the hashtable
      */
-    public int Hash(String key)
+    public int Hash(Object key)
     {
        return key.hashCode()%buckets
     }
@@ -183,6 +197,7 @@ public class HashTable
         assert ht.NumberOfCollisions() == 0
 
         assert ht.IsEmpty() == true
+
 
 
         def hasht = new HashTable(333)
