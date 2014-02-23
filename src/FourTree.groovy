@@ -4,19 +4,21 @@ import java.util.*
 // FourTree is a 2-3-4 Tree using integer keys
 class FourTree {
 
+    private def FourTreeNode root;
+
     public static void main ( String [] args ) {
 
     }
 
-    FourTree ( ) {
+    public FourTree ( ) {
+        root = null
+    }
+
+    def insert ( k, v ) {
 
     }
 
-    public void insert ( ) {
-
-    }
-
-    public void search ( ) {
+    def find ( k ) {
 
     }
 
