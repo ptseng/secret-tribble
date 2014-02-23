@@ -1,5 +1,6 @@
 import java.lang.*
 import java.util.*
+import DataGen
 
 /**
  * Created by sforgie on 2/16/14.
@@ -201,23 +202,57 @@ public class HashTable
     public static void main(String[] args)
     {
 
+        def dictionary = DataGen.import1913EnglishDictionary() as HashMap<String, String>
+
         def ht = new HashTable()
 
 
         assert ht.Size() == 0
 
-        assert ht.ContainsKey("A") == false
+        assert !ht.ContainsKey("A")
 
-        assert ht.ContainsValue("A") == false
+        assert !ht.ContainsValue("A")
 
         assert ht.NumberOfCollisions() == 0
 
-        assert ht.IsEmpty() == true
+        assert ht.IsEmpty()
 
 
-        def hasht = new HashTable(333)
+        for(Object k : dictionary.keySet())
+        {
+            ht.Insert(k,dictionary.get(k))
+        }
 
-        assert hasht.Size() == 0
+        assert ht.Size() == dictionary.size()
+
+
+
+
+
+        println("Size: " + ht.Size())
+        println("Collisions: " + ht.NumberOfCollisions())
+
+        DataGen.timeit ("Timing test")
+        {
+            assert ht.ContainsKey("AITCH")
+            assert ht.ContainsKey("COMPUTER")
+            assert ht.ContainsKey("FARCE")
+            assert ht.ContainsKey("ZEBRA")
+            //assert ht.get("VAMPIRE") == "Either one of two or more species of South American blood-sucking bats belonging to the genera Desmodus and Diphylla. Thesebats are destitute of molar teeth, but have strong, sharp cuttingincisors with which they make punctured wounds from which they suckthe blood of horses, cattle, and other animals, as well as man,chiefly during sleep. They have a cæcal appendage to the stomach, inwhich the blood with which they gorge themselves is stored."
+            //assert ht.get("TWERKING") == null    // Twerking did not exist in 1913}
+        }
+
+
+       assert dictionary.size() != 0
+       DataGen.timeit ("Some data to compare against")
+       {
+            assert dictionary.containsKey("AITCH")
+            assert dictionary.containsKey("COMPUTER")
+            assert dictionary.containsKey("FARCE")
+            assert dictionary.containsKey("ZEBRA")
+            //assert dictionary.get("VAMPIRE") == "Either one of two or more species of South American blood-sucking bats belonging to the genera Desmodus and Diphylla. Thesebats are destitute of molar teeth, but have strong, sharp cuttingincisors with which they make punctured wounds from which they suckthe blood of horses, cattle, and other animals, as well as man,chiefly during sleep. They have a cæcal appendage to the stomach, inwhich the blood with which they gorge themselves is stored."
+            //assert dictionary.get("TWERKING") == null    // Twerking did not exist in 1913}
+       }
 
     }
 
