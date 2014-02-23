@@ -12,21 +12,38 @@ class FourTree<K,V> {
         FourTree tree2 = new FourTree<Tuple, String>()
         FourTree tree3 = new FourTree<String,String>()
 
+        def dataSet = new HashSet<Data<String,String>>()
+
         def data = new Data<String,String>("ggg","jee")
         tree1.insert(data)
+        dataSet.add(data)
         data = new Data<String,String>("xxx","exs")
         tree1.insert(data)
+        dataSet.add(data)
         data = new Data<String,String>("bbb","bee")
         tree1.insert(data)
+        dataSet.add(data)
         data = new Data<String,String>("fff","efffff")
         tree1.insert(data)
+        dataSet.add(data)
         data = new Data<String,String>("zzz","snore")
         tree1.insert(data)
+        dataSet.add(data)
         data = new Data<String,String>("hhh","laugh at me")
         tree1.insert(data)
+        dataSet.add(data)
 
-        /*def dataSet = new HashSet<Data<String,String>>()
-        Random randomVal = new Random()
+        data = new Data<String,String>("ttt","scold")
+        dataSet.add(data)
+        data = new Data<String,String>("oooooo","awe")
+        dataSet.add(data)
+        data = new Data<String,String>("ttt","scold")
+        dataSet.add(data)
+        data = new Data<String,String>("nnnn","munch food")
+        dataSet.add(data)
+        tree3.insert(dataSet)
+
+        /*Random randomVal = new Random()
         for( i in 0..100 ) {
             StringBuilder key = new StringBuilder()
             StringBuilder value = new StringBuilder()
@@ -45,6 +62,12 @@ class FourTree<K,V> {
         }*/
 
         tree1.printInOrder()
+        println()
+        tree3.printInOrder()
+        println()
+        println tree1.find("ggg")
+        println()
+        println tree3.find("hhh")
 
     }
 
@@ -126,7 +149,7 @@ class FourTree<K,V> {
 
     }
 
-    def insert ( data ) {
+    def insert ( Data<K,V> data ) {
 
         if( root == null ) {
             return root = new FourTreeNode( data )
@@ -146,6 +169,12 @@ class FourTree<K,V> {
 
         add( data, root )
 
+    }
+
+    def insert ( Collection<Data> dataSet ) {
+        for ( i in dataSet ) {
+            insert( i )
+        }
     }
 
     def private add ( data, rt ) {
@@ -216,7 +245,43 @@ class FourTree<K,V> {
 
     }
     def find ( k ) {
-        return true
+
+        search( k, root )
+
+    }
+
+    def private search ( k, rt ) {
+
+        if( !rt ) {
+            return null
+        }
+
+        def nodeKey1 = rt.getKey(1)
+        def nodeKey2 = rt.getKey(2)
+        def nodeKey3 = rt.getKey(3)
+
+        if( k < nodeKey1 ) {
+            return search( k, rt.getChild(1) )
+        }
+        else if( k == nodeKey1 ) {
+            return rt.getValue(1)
+        }
+        else if( k > nodeKey1 && ( !nodeKey2 || k < nodeKey2 ) ) {
+            return search( k, rt.getChild(2) )
+        }
+        else if( k == nodeKey2 ) {
+            return rt.getValue(2)
+        }
+        else if( k > nodeKey2 && ( !nodeKey3 || k < nodeKey3 ) ) {
+            return search( k, rt.getChild(3) )
+        }
+        else if( k == nodeKey3 ) {
+            return rt.getValue(3)
+        }
+        else {
+            return search( k, rt.getChild(4) )
+        }
+
     }
 
     def printInOrder() {

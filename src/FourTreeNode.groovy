@@ -43,13 +43,6 @@ class FourTreeNode<K,V> {
         else {
             return null
         }
-
-        /*switch ( k ) {
-            case 1: return key1.getKey()
-            case 2: return key2.getKey()
-            case 3: return key3.getKey()
-            default: return null
-        }*/
     }
 
     def getValue ( k ) {
@@ -65,13 +58,6 @@ class FourTreeNode<K,V> {
         else {
             return null
         }
-
-        /*switch ( k ) {
-            case 1: return key1.getValue()
-            case 2: return key2.getValue()
-            case 3: return key3.getValue()
-            default: return null
-        }*/
     }
 
     def getChild( c ) {
