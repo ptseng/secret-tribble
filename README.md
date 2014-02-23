@@ -1,4 +1,8 @@
 secret-tribble
 ==============
 
-Project for CS 350
+Let's try to use this branching strategy:
+
+http://nvie.com/posts/a-successful-git-branching-model/
+
+
