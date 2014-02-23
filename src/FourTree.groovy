@@ -45,6 +45,8 @@ class FourTree<K,V> {
         }*/
 
         tree1.printInOrder()
+        println()
+        println tree1.find("ggg")
 
     }
 
@@ -216,7 +218,43 @@ class FourTree<K,V> {
 
     }
     def find ( k ) {
-        return true
+
+        search( k, root )
+
+    }
+
+    def private search ( k, rt ) {
+
+        if( !rt ) {
+            return null
+        }
+
+        def nodeKey1 = rt.getKey(1)
+        def nodeKey2 = rt.getKey(2)
+        def nodeKey3 = rt.getKey(3)
+
+        if( k < nodeKey1 ) {
+            return search( k, rt.getChild(1) )
+        }
+        else if( k == nodeKey1 ) {
+            return rt.getValue(1)
+        }
+        else if( k > nodeKey1 && ( !nodeKey2 || k < nodeKey2 ) ) {
+            return search( k, rt.getChild(2) )
+        }
+        else if( k == nodeKey2 ) {
+            return rt.getValue(2)
+        }
+        else if( k > nodeKey2 && ( !nodeKey3 || k < nodeKey3 ) ) {
+            return search( k, rt.getChild(3) )
+        }
+        else if( k == nodeKey3 ) {
+            return rt.getValue(3)
+        }
+        else {
+            return search( k, rt.getChild(4) )
+        }
+
     }
 
     def printInOrder() {
