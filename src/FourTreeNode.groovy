@@ -11,7 +11,13 @@ class FourTreeNode<K,V> {
     }
 
     public FourTreeNode ( Data<K,V> k ) {
-        key2 = k
+        key1 = k
+        key2 = null
+        key3 = null
+        left = null
+        leftmid = null
+        rightmid = null
+        right = null
     }
 
     public FourTreeNode ( k1 = null, k2 = null, k3 = null, l = null, lm = null, rm = null, r = null ) {
@@ -25,46 +31,83 @@ class FourTreeNode<K,V> {
     }
 
     def getKey ( k ) {
-        switch ( k ) {
+        if( k == 1 && key1 ) {
+            return key1.getKey()
+        }
+        else if( k == 2 && key2 ) {
+            return key2.getKey()
+        }
+        else if( k == 3 && key3 ) {
+            return key3.getKey()
+        }
+        else {
+            return null
+        }
+
+        /*switch ( k ) {
             case 1: return key1.getKey()
             case 2: return key2.getKey()
             case 3: return key3.getKey()
             default: return null
-        }
+        }*/
     }
 
     def getValue ( k ) {
-        switch ( k ) {
+        if( k == 1 && key1 ) {
+            return key1.getValue()
+        }
+        else if( k == 2 && key2 ) {
+            return key2.getValue()
+        }
+        else if( k == 3 && key3 ) {
+            return key3.getValue()
+        }
+        else {
+            return null
+        }
+
+        /*switch ( k ) {
             case 1: return key1.getValue()
             case 2: return key2.getValue()
             case 3: return key3.getValue()
             default: return null
+        }*/
+    }
+
+    def getChild( c ) {
+        switch ( c ) {
+            case 1: return left
+            case 2: return leftmid
+            case 3: return rightmid
+            case 4: return right
+            default: return null
         }
     }
 
-    def setKeyValue ( k, key ) {
+    def setChild( c, child ) {
+        switch( c ) {
+            case 1: return left = child
+            case 2: return leftmid = child
+            case 3: return rightmid = child
+            case 4: return right = child
+            default: return null
+        }
+    }
+
+    def setData ( k, data ) {
         switch ( k ) {
-            case 1: return key1.setKey( key )
-            case 2: return key2.setKey( key )
-            case 3: return key3.setKey( key )
+            case 1: return key1 = data
+            case 2: return key2 = data
+            case 3: return key3 = data
             default: return
         }
     }
 
-    def setValue ( k, value ) {
+    def getData ( k ) {
         switch ( k ) {
-            case 1: return key1.setValue( value )
-            case 2: return key2.setValue( value )
-            case 3: return key3.setValue( value )
-            default: return
-        }
-    }
-
-    def setData ( k, d ) {
-        switch ( k ) {
-            case 1: return key1 = d
-            case 2: return key2 = d
-            case 3: return key3 = d
+            case 1: return key1
+            case 2: return key2
+            case 3: return key3
             default: return
         }
     }
@@ -74,6 +117,20 @@ class FourTreeNode<K,V> {
             return true
         }
         false
+    }
+
+    def countElems() {
+        def ct = 0
+        if ( key1 != null ) {
+            ++ct
+        }
+        if ( key2 != null ) {
+            ++ct
+        }
+        if ( key3 != null ) {
+            ++ct
+        }
+        ct
     }
 
 }
