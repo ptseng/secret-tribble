@@ -28,7 +28,13 @@ public class SimpleBinaryTree<K extends Comparable<K>, V>
             return new BSTNode<K,V>(key, value, null, null)
         }
 
-        if (key.compareTo(n.getKey()) <= 0) {
+        if (key.compareTo(n.getKey()) == 0)
+        {
+            n.setValue(value)
+            return n
+        }
+
+        if (key.compareTo(n.getKey()) < 0) {
             n.setLeft( sub_insert(n.getLeft(), key, value) )
             return n;
         }

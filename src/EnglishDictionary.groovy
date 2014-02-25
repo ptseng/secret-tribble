@@ -39,24 +39,37 @@ public class EnglishDictionary extends DataGen {
             assert englishDictionaryHashMap.get("TWERKING") == null    // Twerking did not exist in 1913}
         }
 
-
         List<String> tale = importATaleOfTwoCities()
         Map englishDictionaryObj = (Map) import1913EnglishDictionary()
+
+        timeit("Importing 1913 Dictionary into SimpleBinaryTree")
+        {
+            SimpleBinaryTree<String, String> bst = new SimpleBinaryTree<String,String>()
+            englishDictionaryObj.each {key, val ->
+                bst.insert(key.toString(), val.toString())
+            }
+
+            assert bst.size() == englishDictionaryObj.size()
+            assert bst.lookup("AITCH")
+            assert bst.getTraversals("AITCH") == 16
+            assert bst.getTraversals("ZEBRA") == 14
+            assert bst.get("VAMPIRE") == "Either one of two or more species of South American blood-sucking bats belonging to the genera Desmodus and Diphylla. Thesebats are destitute of molar teeth, but have strong, sharp cuttingincisors with which they make punctured wounds from which they suckthe blood of horses, cattle, and other animals, as well as man,chiefly during sleep. They have a cæcal appendage to the stomach, inwhich the blood with which they gorge themselves is stored."
+            assert bst.getTraversals("VAMPIRE") == 23
+            assert !bst.get("TWERK")
+            assert bst.getTraversals("TWERK") == 20
+            assert bst.maxDepth()  == 44
+            assert bst.minDepth()  == 4
+
+            //Test duplicate key insert (Should replace with new value)
+            bst.insert("VAMPIRE", "Sookie Stackhouse Problems")
+            assert bst.get("VAMPIRE") == "Sookie Stackhouse Problems"
+            assert bst.getTraversals("VAMPIRE") == 23
+        }
 
         SimpleBinaryTree<String, String> bst = new SimpleBinaryTree<String,String>()
         englishDictionaryObj.each {key, val ->
             bst.insert(key.toString(), val.toString())
         }
-
-        assert bst.size() == englishDictionaryObj.size()
-        assert bst.lookup("AITCH")
-        assert bst.getTraversals("AITCH") == 16
-        assert bst.getTraversals("ZEBRA") == 14
-        assert bst.get("VAMPIRE") == "Either one of two or more species of South American blood-sucking bats belonging to the genera Desmodus and Diphylla. Thesebats are destitute of molar teeth, but have strong, sharp cuttingincisors with which they make punctured wounds from which they suckthe blood of horses, cattle, and other animals, as well as man,chiefly during sleep. They have a cæcal appendage to the stomach, inwhich the blood with which they gorge themselves is stored."
-        assert !bst.get("TWERK")
-        assert bst.getTraversals("TWERK") == 20
-        assert bst.maxDepth()  == 44
-        assert bst.minDepth()  == 4
 
         int found = 0
         int notfound = 0
