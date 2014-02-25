@@ -54,7 +54,7 @@ public class SimpleBinaryTree<K extends Comparable<K>, V>
             return false
         }
 
-        if (n.getKey().equals(key)) {
+        if (n.getKey().compareTo(key) == 0) {
             return true
         }
 
@@ -116,7 +116,7 @@ public class SimpleBinaryTree<K extends Comparable<K>, V>
             return 0
         }
 
-        if (n.getKey().equals(key)) {
+        if (n.getKey().compareTo(key) == 0) {
             return 0
         }
 
@@ -139,7 +139,7 @@ public class SimpleBinaryTree<K extends Comparable<K>, V>
             return null
         }
 
-        if (n.getKey().equals(key)) {
+        if (n.getKey().compareTo(key) == 0) {
             return n.getValue()
         }
 
