@@ -116,7 +116,11 @@ public class SimpleBinaryTree<K extends Comparable<K>, V>
             return 0
         }
 
+<<<<<<< HEAD
+        if (n.getKey().compareTo(key) == 0) {
+=======
         if (key.compareTo(n.getKey()) == 0) {
+>>>>>>> locationdata
             return 0
         }
 
@@ -138,7 +142,11 @@ public class SimpleBinaryTree<K extends Comparable<K>, V>
             return null
         }
 
+<<<<<<< HEAD
+        if (n.getKey().compareTo(key) == 0) {
+=======
         if (key.compareTo(n.getKey()) == 0) {
+>>>>>>> locationdata
             return n.getValue()
         }
 
