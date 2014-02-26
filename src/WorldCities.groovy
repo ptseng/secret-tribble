@@ -8,27 +8,7 @@ class WorldCities extends DataGen {
         K lat
         J lon
 
-        public K returnLat()
-        {
-            return lat
-        }
-
-        public J returnLon()
-        {
-            return lon
-        }
-
-        public boolean equals(Coordinates<K,J> that)
-        {
-            return this.compareTo(that) == 0
-        }
-
-        public boolean isEqual(float lat_in, float lon_in)
-        {
-            return lat_in == (float) lat && lon_in == (float) lon
-        }
-
-        public boolean isNear(float lat_in, float lon_in, float distance)
+        public boolean isNear(Float lat_in, Float lon_in, Float distance)
         {
             return coordDistance(lat, lon, lat_in, lon_in) < distance
         }

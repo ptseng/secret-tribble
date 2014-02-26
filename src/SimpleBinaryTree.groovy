@@ -150,20 +150,6 @@ public class SimpleBinaryTree<K extends Comparable<K>, V>
         }
     }
 
-    //PRINT
-    public void print()
-    {
-        printTree(root)
-    }
-
-    private void printTree(BSTNode<K,V> n) {
-        if (n != null) {
-            printTree(n.getRight())
-            println n.key
-            printTree(n.getLeft())
-        }
-    }
-
     //ReturnAllKeys
     public K[] returnKeys()
     {
