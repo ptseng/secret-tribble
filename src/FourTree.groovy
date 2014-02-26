@@ -32,7 +32,22 @@ class FourTree<K,V> {
         data = new Data<String,String>("h","hhh")
         tree1.insert(data)
         dataSet.add(data)
-        data = new Data<String,String>("","ttt")
+        data = new Data<String,String>("t","ttt")
+        tree1.insert(data)
+        dataSet.add(data)
+        data = new Data<String,String>("s","sss")
+        tree1.insert(data)
+        dataSet.add(data)
+        data = new Data<String,String>("w","www")
+        tree1.insert(data)
+        dataSet.add(data)
+        data = new Data<String,String>("a","aaa")
+        tree1.insert(data)
+        dataSet.add(data)
+        data = new Data<String,String>("m","mmm")
+        tree1.insert(data)
+        dataSet.add(data)
+        data = new Data<String,String>("j","jjj")
         tree1.insert(data)
         dataSet.add(data)
 
@@ -65,6 +80,13 @@ class FourTree<K,V> {
         println "Search results on Tree1:"
         println tree1.find("g")
         println tree3.find("h")
+        println()
+
+        println "# of nodes in Tree1: " + tree1.nodeCount()
+        println()
+
+        println "Height of Tree1: " + tree1.height()
+        println()
 
     }
 
@@ -130,7 +152,9 @@ class FourTree<K,V> {
 
     /*
     * Builds a Data object with key ==  k and value == v
-    * Calls add() to insert that object into the tree
+    * Calls add() to insert that object into the tree.
+    * Includes a special case for handling a split if the
+    * root itself is a 3-node
     *
     * @param k Object
     * @param v Object
@@ -160,7 +184,9 @@ class FourTree<K,V> {
     }
 
     /*
-    * Calls add() to insert a Data object into the tree
+    * Calls add() to insert a Data object into the tree.
+    * Includes a special case for handling a split if the
+    * root itself is a 3-node
     *
     * @param data Data
     */
@@ -362,6 +388,58 @@ class FourTree<K,V> {
             println rt.getValue(3)
         }
         inOrderPrint( rt.getChild(4) )
+    }
+
+    /*
+    * Calls countNodes and returns the number of nodes in the tree
+    *
+    * @return The number of nodes in the tree
+    */
+    def nodeCount() {
+
+        countNodes( root )
+
+    }
+
+    /*
+    * Performs node traversal and tallies each one
+    *
+    * @param rt FourTreeNode - The root of the tree
+    * @return The number of nodes in the tree
+    */
+    def private countNodes( rt ) {
+        if( !rt ) {
+            return 0
+        }
+        countNodes( rt.getChild(1) ) +
+        countNodes( rt.getChild(2) ) +
+        countNodes( rt.getChild(3) ) +
+        countNodes( rt.getChild(4) ) + 1
+    }
+
+    /*
+    * Calls getHeight and returns the height of the tree
+    *
+    * @return The height of the tree
+    */
+    def height() {
+
+        getHeight( root )
+
+    }
+
+    /*
+    * Performs a traversal and returns the height of the tree
+    *
+    * @return The number of nodes in the tree
+    */
+    def private getHeight( rt ) {
+        if( !rt ) {
+            return 0
+        }
+        def leftMax = Math.max( getHeight(rt.getChild(1)), getHeight(rt.getChild(2)) )
+        def rightMax = Math.max( getHeight(rt.getChild(3)), getHeight(rt.getChild(4)) )
+        Math.max( leftMax, rightMax ) + 1
     }
 
 }
