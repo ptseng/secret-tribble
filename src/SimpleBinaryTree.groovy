@@ -49,7 +49,8 @@ public class SimpleBinaryTree<K extends Comparable<K>, V>
         return sub_lookup(root, key)
     }
 
-    private static boolean sub_lookup(BSTNode<K,V> n, K key) {
+    private boolean sub_lookup(BSTNode<K,V> n, K key) {
+
         if (n == null) {
             return false
         }
@@ -61,7 +62,6 @@ public class SimpleBinaryTree<K extends Comparable<K>, V>
         if (key.compareTo(n.getKey()) < 0) {
             return sub_lookup(n.getLeft(), key)
         }
-
         else {
             return sub_lookup(n.getRight(), key)
         }
@@ -73,7 +73,7 @@ public class SimpleBinaryTree<K extends Comparable<K>, V>
         return sub_maxdepth(root);
     }
 
-    private static int sub_maxdepth(BSTNode<K,V> n)
+    private int sub_maxdepth(BSTNode<K,V> n)
     {
         if ( n == null )
             return 0
@@ -110,20 +110,19 @@ public class SimpleBinaryTree<K extends Comparable<K>, V>
         return sub_traversals(root, key)
     }
 
-    private static int sub_traversals(BSTNode<K,V> n, K key)
+    private int sub_traversals(BSTNode<K,V> n, K key)
     {
         if (n == null) {
             return 0
         }
 
-        if (n.getKey().equals(key)) {
+        if (key.compareTo(n.getKey()) == 0) {
             return 0
         }
 
         if (key.compareTo(n.getKey()) < 0) {
             return 1 + sub_traversals(n.getLeft(), key)
         }
-
         else {
             return 1 + sub_traversals(n.getRight(), key)
         }
@@ -134,22 +133,90 @@ public class SimpleBinaryTree<K extends Comparable<K>, V>
         return sub_get(root, key)
     }
 
-    private static V sub_get(BSTNode<K,V> n, K key) {
+    private V sub_get(BSTNode<K,V> n, K key) {
         if (n == null) {
             return null
         }
 
-        if (n.getKey().equals(key)) {
+        if (key.compareTo(n.getKey()) == 0) {
             return n.getValue()
         }
 
         if (key.compareTo(n.getKey()) < 0) {
             return sub_get(n.getLeft(), key)
         }
-
         else {
             return sub_get(n.getRight(), key)
         }
+    }
+
+    //PRINT
+    public void print()
+    {
+        printTree(root)
+    }
+
+    private void printTree(BSTNode<K,V> n) {
+        if (n != null) {
+            printTree(n.getRight())
+            println n.key
+            printTree(n.getLeft())
+        }
+    }
+
+    //ReturnAllKeys
+    public K[] returnKeys()
+    {
+        return returnKeyInOrder(root)
+    }
+
+    private K[] returnKeyInOrder(BSTNode<K,V> n) {
+        def keyarray = []
+
+        if (n != null) {
+            keyarray.addAll(returnKeyInOrder(n.getRight()))
+            keyarray.add(n.key)
+            keyarray.addAll(returnKeyInOrder(n.getLeft()))
+        }
+
+        return keyarray
+    }
+
+    //ReturnAllValues
+    public V[] returnValues()
+    {
+        return returnValuesInOrder(root)
+    }
+
+    private V[] returnValuesInOrder(BSTNode<K,V> n) {
+        def valuearray = []
+
+        if (n != null) {
+            valuearray.addAll(returnValuesInOrder(n.getRight()))
+            valuearray.add(n.value)
+            valuearray.addAll(returnValuesInOrder(n.getLeft()))
+        }
+
+        return valuearray
+    }
+
+    //ReturnKVPair
+    public Map<K,V> returnKeyValues()
+    {
+        return returnKeyValuesInOrder(root)
+    }
+
+    private Map<K,V> returnKeyValuesInOrder(BSTNode<K,V> n)
+    {
+        def keyvaluemap = [:]
+
+        if (n != null) {
+            keyvaluemap.putAll(returnKeyValuesInOrder(n.getRight()))
+            keyvaluemap.put(n.key, n.value)
+            keyvaluemap.putAll(returnKeyValuesInOrder(n.getLeft()))
+        }
+
+        return keyvaluemap
     }
 }
 
@@ -177,3 +244,4 @@ class BSTNode<K, V> {
     public void setLeft(BSTNode<K,V> newL) { left = newL }
     public void setRight(BSTNode<K,V> newR) { right = newR }
 }
+
