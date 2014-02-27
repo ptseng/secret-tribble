@@ -85,6 +85,9 @@ class FourTree<K,V> {
         println "# of nodes in Tree1: " + tree1.nodeCount()
         println()
 
+        println "# of elements in Tree1: " + tree1.countElems()
+        println()
+
         println "Height of Tree1: " + tree1.height()
         println()
 
@@ -363,7 +366,9 @@ class FourTree<K,V> {
     * Calls inOrderPrint()
     */
     def printInOrder() {
+
         inOrderPrint( root )
+
     }
 
     /*
@@ -388,6 +393,33 @@ class FourTree<K,V> {
             println rt.getValue(3)
         }
         inOrderPrint( rt.getChild(4) )
+    }
+
+    /*
+    * Calls elemCount()
+    *
+    * @return - The number of elements in the tree
+    */
+    def countElems() {
+
+        elemCount( root )
+
+    }
+
+    /*
+    * Traverses the tree and counts the number of elements
+    *
+    * @return - The number of elements in the tree
+    */
+    def private elemCount( rt ) {
+        if( !rt ) {
+            return 0
+        }
+        elemCount( rt.getChild(1) ) +
+        elemCount( rt.getChild(2) ) +
+        elemCount( rt.getChild(3) ) +
+        elemCount( rt.getChild(4) ) +
+        rt.countElems()
     }
 
     /*
