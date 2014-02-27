@@ -210,7 +210,7 @@ public class HashTable
     public static void main(String[] args)
     {
 
-        def dictionary = DataGen.import1913EnglishDictionary() as HashMap<String, String>
+        def dictionary = EnglishDictionary.import1913EnglishDictionary() as HashMap<String, String>
 
         def ht = new HashTable()
 
@@ -252,6 +252,9 @@ public class HashTable
         }
 
 
+
+
+
         println("Traversals required for 'AITCH': " + ht.ContainsKey("AITCH") + "\n")
 
        assert dictionary.size() != 0
@@ -266,6 +269,16 @@ public class HashTable
        }
 
 
+        DataGen.timeit("Timing value search (hashtable: ")
+                {
+                    assert ht.ContainsValue("Either one of two or more species of South American blood-sucking bats belonging to the genera Desmodus and Diphylla. Thesebats are destitute of molar teeth, but have strong, sharp cuttingincisors with which they make punctured wounds from which they suckthe blood of horses, cattle, and other animals, as well as man,chiefly during sleep. They have a cæcal appendage to the stomach, inwhich the blood with which they gorge themselves is stored.")
+                }
+
+
+        DataGen.timeit("Timing value search (dictionary: ")
+                {
+                    assert dictionary.containsValue("Either one of two or more species of South American blood-sucking bats belonging to the genera Desmodus and Diphylla. Thesebats are destitute of molar teeth, but have strong, sharp cuttingincisors with which they make punctured wounds from which they suckthe blood of horses, cattle, and other animals, as well as man,chiefly during sleep. They have a cæcal appendage to the stomach, inwhich the blood with which they gorge themselves is stored.")
+                }
 
 
     }
