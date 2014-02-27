@@ -1,5 +1,6 @@
 import java.lang.*
 import java.util.*
+import groovy.json.JsonSlurper
 
 // FourTree is a 2-3-4 Tree using integer keys
 class FourTree<K,V> {
@@ -13,61 +14,27 @@ class FourTree<K,V> {
         FourTree tree3 = new FourTree<String,String>()
 
         def dataSet = new HashSet<Data<String,String>>()
+        def engDict = DataGen.import1913EnglishDictionary() as HashMap<String,String>
+        def engBook = DataGen.importATaleOfTwoCities() as ArrayList<String>
 
-        def data = new Data<String,String>("ggg","jee")
-        tree1.insert(data)
-        dataSet.add(data)
-        data = new Data<String,String>("xxx","exs")
-        tree1.insert(data)
-        dataSet.add(data)
-        data = new Data<String,String>("bbb","bee")
-        tree1.insert(data)
-        dataSet.add(data)
-        data = new Data<String,String>("fff","efffff")
-        tree1.insert(data)
-        dataSet.add(data)
-        data = new Data<String,String>("zzz","snore")
-        tree1.insert(data)
-        dataSet.add(data)
-        data = new Data<String,String>("hhh","laugh at me")
-        tree1.insert(data)
-        dataSet.add(data)
+        engDict.each { key, value -> def data = new Data<String,String>(key, value); dataSet.add( data ) }
+        tree1.insert( dataSet )
 
-        data = new Data<String,String>("ttt","scold")
-        dataSet.add(data)
-        data = new Data<String,String>("oooooo","awe")
-        dataSet.add(data)
-        data = new Data<String,String>("ttt","scold")
-        dataSet.add(data)
-        data = new Data<String,String>("nnnn","munch food")
-        dataSet.add(data)
-        tree3.insert(dataSet)
+        def nodenum = tree1.nodeCount()
+        def elemnum = tree1.elemCount()
+        def treeheight = tree1.height()
 
-        /*Random randomVal = new Random()
-        for( i in 0..100 ) {
-            StringBuilder key = new StringBuilder()
-            StringBuilder value = new StringBuilder()
-            int x = randomVal.nextInt( (i+20 % 10)+1 )
-            for( j in 0..x ) {
-                key.append( (char) (j % 256 +1) )
-            }
-            int y = randomVal.nextInt( (i+30 % 10)+1 )
-            for( k in 0..y ) {
-                value.append( (char) (k % 256 +1) )
-            }
-            def data = new Data<String,String>( (String)key, (String)value )
-            println data
-            tree1.insert( data )
-            dataSet.add( data )
-        }*/
+        println "Number of elements: $elemnum"
+        println "Number of nodes: $nodenum"
+        println "Height of tree: $treeheight"
 
-        tree1.printInOrder()
-        println()
-        tree3.printInOrder()
-        println()
-        println tree1.find("ggg")
-        println()
-        println tree3.find("hhh")
+        assert tree1.find( "PHREATIC" )
+        assert tree1.find( "ILLECEBRATION" )
+        assert tree1.find( "KNOWN" )
+        assert !tree1.find( "BLARGLEFARGLE" )
+        assert !tree1.find( "HOOTENANNY" )
+
+        engBook.each { println "$it: " + ( tree1.find( it ) ?: "NOT FOUND" ) }  // Produces too much output for console
 
     }
 
@@ -75,6 +42,12 @@ class FourTree<K,V> {
         root = null
     }
 
+    /*
+    * Split method divides a 3-node and pushes up the middle element.
+    *
+    * @param rt - FourTreeNode parent of node to split
+    * @param chNum - Integer number of rt's child to be split
+    */
     def private split( rt, chNum ) {
         def child = rt.getChild( chNum )
         def tempData = child.getData(2)
@@ -125,6 +98,15 @@ class FourTree<K,V> {
         }
     }
 
+    /*
+    * Builds a Data object with key ==  k and value == v
+    * Calls add() to insert that object into the tree.
+    * Includes a special case for handling a split if the
+    * root itself is a 3-node
+    *
+    * @param k Object
+    * @param v Object
+    */
     def insert ( k, v ) {
 
         Data<K,V> data = new Data<K,V>( k, v )
@@ -149,6 +131,13 @@ class FourTree<K,V> {
 
     }
 
+    /*
+    * Calls add() to insert a Data object into the tree.
+    * Includes a special case for handling a split if the
+    * root itself is a 3-node
+    *
+    * @param data Data
+    */
     def insert ( Data<K,V> data ) {
 
         if( root == null ) {
@@ -171,12 +160,25 @@ class FourTree<K,V> {
 
     }
 
+    /*
+    * Iterates over the elements of the collection and adds them all to the tree
+    * Note that if any elements of the Collection have identical keys only one
+    * will be added to the tree. Which one will be added is unpredictable.
+    *
+    * @param dataSet Collection<Data>
+    */
     def insert ( Collection<Data> dataSet ) {
         for ( i in dataSet ) {
             insert( i )
         }
     }
 
+    /*
+    * Adds the Data object passed to the tree in the appropriate place based on its key
+    *
+    * @param data Data
+    * @param rt FourTreeNode
+    */
     def private add ( data, rt ) {
 
         if( rt == null ) {
@@ -191,11 +193,17 @@ class FourTree<K,V> {
         def nodeKey3 = rt.getKey(3)
 
         if( rt.isLeaf() ) {
-            if ( elems == 1 && dataKey < nodeKey1 ) {
+            if( dataKey == nodeKey1 ) {
+                rt.setData( 1, data )
+            }
+            else if( dataKey == nodeKey2 ) {
+                rt.setData( 2, data )
+            }
+            else if ( elems == 1 && dataKey < nodeKey1 ) {
                 rt.setData( 2, rt.getData(1) )
                 rt.setData( 1, data )
             }
-            else if( elems == 1 && dataKey >= nodeKey1 ) {
+            else if( elems == 1 && dataKey > nodeKey1 ) {
                 rt.setData( 2, data )
             }
             else if( elems == 2 && dataKey < nodeKey1 ) {
@@ -244,12 +252,27 @@ class FourTree<K,V> {
         }
 
     }
+
+    /*
+    * Calls search() to locate and return a Data object element of the tree by its key
+    *
+    * @param k Object
+    * @return The value in the Data object with key matching parameter k, or null if no match found
+    */
     def find ( k ) {
 
         search( k, root )
 
     }
 
+    /*
+    * Searches the tree for a Data object where Data.key matches parameter k
+    * Returns the Data object on match. Returns null if no match found
+    *
+    * @param k Object
+    * @param rt FourTreeNode
+    * @return The Data object with key matching parameter k, or null if no match found
+    */
     def private search ( k, rt ) {
 
         if( !rt ) {
@@ -284,10 +307,20 @@ class FourTree<K,V> {
 
     }
 
+    /*
+    * Calls inOrderPrint()
+    */
     def printInOrder() {
+
         inOrderPrint( root )
+
     }
 
+    /*
+    * Performs inorder traversal of the tree and prints the value field of all Data object elements
+    *
+    * @param rt FourTreeNode
+    */
     def private inOrderPrint( rt ) {
         if( !rt ) {
             return
@@ -305,6 +338,85 @@ class FourTree<K,V> {
             println rt.getValue(3)
         }
         inOrderPrint( rt.getChild(4) )
+    }
+
+    /*
+    * Calls elemCount()
+    *
+    * @return - The number of elements in the tree
+    */
+    def elemCount() {
+
+        countElems( root )
+
+    }
+
+    /*
+    * Traverses the tree and counts the number of elements
+    *
+    * @return - The number of elements in the tree
+    */
+    def private countElems( rt ) {
+        if( !rt ) {
+            return 0
+        }
+        countElems( rt.getChild(1) ) +
+        countElems( rt.getChild(2) ) +
+        countElems( rt.getChild(3) ) +
+        countElems( rt.getChild(4) ) +
+        rt.countElems()
+    }
+
+    /*
+    * Calls countNodes and returns the number of nodes in the tree
+    *
+    * @return The number of nodes in the tree
+    */
+    def nodeCount() {
+
+        countNodes( root )
+
+    }
+
+    /*
+    * Performs node traversal and tallies each one
+    *
+    * @param rt FourTreeNode - The root of the tree
+    * @return The number of nodes in the tree
+    */
+    def private countNodes( rt ) {
+        if( !rt ) {
+            return 0
+        }
+        countNodes( rt.getChild(1) ) +
+        countNodes( rt.getChild(2) ) +
+        countNodes( rt.getChild(3) ) +
+        countNodes( rt.getChild(4) ) + 1
+    }
+
+    /*
+    * Calls getHeight and returns the height of the tree
+    *
+    * @return The height of the tree
+    */
+    def height() {
+
+        getHeight( root )
+
+    }
+
+    /*
+    * Performs a traversal and returns the height of the tree
+    *
+    * @return The number of nodes in the tree
+    */
+    def private getHeight( rt ) {
+        if( !rt ) {
+            return 0
+        }
+        def leftMax = Math.max( getHeight(rt.getChild(1)), getHeight(rt.getChild(2)) )
+        def rightMax = Math.max( getHeight(rt.getChild(3)), getHeight(rt.getChild(4)) )
+        Math.max( leftMax, rightMax ) + 1
     }
 
 }
