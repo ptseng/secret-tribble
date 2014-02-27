@@ -1,6 +1,5 @@
 import java.lang.*
 import java.util.*
-import DataGen
 
 /**
  * Created by sforgie on 2/16/14.
@@ -85,11 +84,13 @@ public class HashTable
      *  HashTable and false if not
      *
      * @param key Object
-     * @return  true if key is in the HashTable
+     * @return  int -1 if not in the table otherwise the traversal number
+     *              it took to get there
      */
-    public boolean ContainsKey(Object key)
+    public int ContainsKey(Object key)
     {
         def index = Hash(key)
+        def traversal = 0
 
         if(hashtable[index] != null)
         {
@@ -97,12 +98,14 @@ public class HashTable
 
             while(iter.hasNext())
             {
+                ++traversal
+
                 if(iter.next().matchKey(key))
-                    return true
+                    return traversal
             }
         }
 
-        return false
+        return -1
     }
 
     /**
@@ -110,24 +113,29 @@ public class HashTable
      * the hashtable and false if not
      *
      * @param value  Object
-     * @return  boolean
+     * @return  int -1 if not in the table otherwise the traversal number
+     *              it took to get there
      */
-    public boolean ContainsValue(Object value)
+    public int ContainsValue(Object value)
     {
+        def traversal = 0
+
         for(LinkedList<Data> l : hashtable)
         {
             if(l != null && l.head().value.equals(value))
-                return true
+                return 0
             def iter = l.iterator()
 
             while(iter.hasNext())
             {
+                ++traversal
+
                 if(iter.next().value.equals(value))
-                    return true
+                    return traversal
             }
         }
 
-        return false
+        return -1
 
     }
 
@@ -209,9 +217,9 @@ public class HashTable
 
         assert ht.Size() == 0
 
-        assert !ht.ContainsKey("A")
+        assert ht.ContainsKey("A") == -1
 
-        assert !ht.ContainsValue("A")
+        assert ht.ContainsValue("A") == -1
 
         assert ht.NumberOfCollisions() == 0
 
@@ -234,14 +242,17 @@ public class HashTable
 
         DataGen.timeit ("Timing test")
         {
-            assert ht.ContainsKey("AITCH")
-            assert ht.ContainsKey("COMPUTER")
-            assert ht.ContainsKey("FARCE")
-            assert ht.ContainsKey("ZEBRA")
+            assert ht.ContainsKey("AITCH") != -1
+            assert ht.ContainsKey("COMPUTER") != -1
+            assert ht.ContainsKey("FARCE") != -1
+            assert ht.ContainsKey("ZEBRA") != -1
+            assert ht.ContainsKey("TWERKING") == -1       // Twerking did not exist in 1913
+
             //assert ht.get("VAMPIRE") == "Either one of two or more species of South American blood-sucking bats belonging to the genera Desmodus and Diphylla. Thesebats are destitute of molar teeth, but have strong, sharp cuttingincisors with which they make punctured wounds from which they suckthe blood of horses, cattle, and other animals, as well as man,chiefly during sleep. They have a cæcal appendage to the stomach, inwhich the blood with which they gorge themselves is stored."
-            //assert ht.get("TWERKING") == null    // Twerking did not exist in 1913}
         }
 
+
+        println("Traversals required for 'AITCH': " + ht.ContainsKey("AITCH") + "\n")
 
        assert dictionary.size() != 0
        DataGen.timeit ("Some data to compare against")
@@ -250,9 +261,12 @@ public class HashTable
             assert dictionary.containsKey("COMPUTER")
             assert dictionary.containsKey("FARCE")
             assert dictionary.containsKey("ZEBRA")
+            assert !dictionary.containsKey("TWERKING")
             //assert dictionary.get("VAMPIRE") == "Either one of two or more species of South American blood-sucking bats belonging to the genera Desmodus and Diphylla. Thesebats are destitute of molar teeth, but have strong, sharp cuttingincisors with which they make punctured wounds from which they suckthe blood of horses, cattle, and other animals, as well as man,chiefly during sleep. They have a cæcal appendage to the stomach, inwhich the blood with which they gorge themselves is stored."
-            //assert dictionary.get("TWERKING") == null    // Twerking did not exist in 1913}
        }
+
+
+
 
     }
 
