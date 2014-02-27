@@ -1,5 +1,6 @@
 import java.lang.*
 import java.util.*
+import groovy.json.JsonSlurper
 
 // FourTree is a 2-3-4 Tree using integer keys
 class FourTree<K,V> {
@@ -13,83 +14,27 @@ class FourTree<K,V> {
         FourTree tree3 = new FourTree<String,String>()
 
         def dataSet = new HashSet<Data<String,String>>()
+        def engDict = DataGen.import1913EnglishDictionary() as HashMap<String,String>
+        def engBook = DataGen.importATaleOfTwoCities() as ArrayList<String>
 
-        def data = new Data<String,String>("g","ggg")
-        tree1.insert(data)
-        dataSet.add(data)
-        data = new Data<String,String>("x","xxx")
-        tree1.insert(data)
-        dataSet.add(data)
-        data = new Data<String,String>("b","bbb")
-        tree1.insert(data)
-        dataSet.add(data)
-        data = new Data<String,String>("f","fff")
-        tree1.insert(data)
-        dataSet.add(data)
-        data = new Data<String,String>("z","zzz")
-        tree1.insert(data)
-        dataSet.add(data)
-        data = new Data<String,String>("h","hhh")
-        tree1.insert(data)
-        dataSet.add(data)
-        data = new Data<String,String>("t","ttt")
-        tree1.insert(data)
-        dataSet.add(data)
-        data = new Data<String,String>("s","sss")
-        tree1.insert(data)
-        dataSet.add(data)
-        data = new Data<String,String>("w","www")
-        tree1.insert(data)
-        dataSet.add(data)
-        data = new Data<String,String>("a","aaa")
-        tree1.insert(data)
-        dataSet.add(data)
-        data = new Data<String,String>("m","mmm")
-        tree1.insert(data)
-        dataSet.add(data)
-        data = new Data<String,String>("j","jjj")
-        tree1.insert(data)
-        dataSet.add(data)
+        engDict.each { key, value -> def data = new Data<String,String>(key, value); dataSet.add( data ) }
+        tree1.insert( dataSet )
 
-        println "Tree1:"
-        tree1.printInOrder()
-        println()
+        def nodenum = tree1.nodeCount()
+        def elemnum = tree1.elemCount()
+        def treeheight = tree1.height()
 
-        data = new Data<String,String>("o","000")
-        dataSet.add(data)
-        data = new Data<String,String>("t","REPLACED")
-        dataSet.add(data)
-        tree1.insert(data)
-        data = new Data<String,String>("n","nnn")
-        dataSet.add(data)
+        println "Number of elements: $elemnum"
+        println "Number of nodes: $nodenum"
+        println "Height of tree: $treeheight"
 
-        tree3.insert(dataSet)
+        assert tree1.find( "PHREATIC" )
+        assert tree1.find( "ILLECEBRATION" )
+        assert tree1.find( "KNOWN" )
+        assert !tree1.find( "BLARGLEFARGLE" )
+        assert !tree1.find( "HOOTENANNY" )
 
-        println "HashSet:"
-        dataSet.each{ print it.getValue() + " / " };
-        println('\n')
-
-        println "Tree3:"
-        tree3.printInOrder()
-        println()
-
-        println "Tree1:"
-        tree1.printInOrder()
-        println()
-
-        println "Search results on Tree1:"
-        println tree1.find("g")
-        println tree3.find("h")
-        println()
-
-        println "# of nodes in Tree1: " + tree1.nodeCount()
-        println()
-
-        println "# of elements in Tree1: " + tree1.countElems()
-        println()
-
-        println "Height of Tree1: " + tree1.height()
-        println()
+        engBook.each { println "$it: " + ( tree1.find( it ) ?: "NOT FOUND" ) }  // Produces too much output for console
 
     }
 
@@ -312,7 +257,7 @@ class FourTree<K,V> {
     * Calls search() to locate and return a Data object element of the tree by its key
     *
     * @param k Object
-    * @return The Data object with key matching parameter k, or null if no match found
+    * @return The value in the Data object with key matching parameter k, or null if no match found
     */
     def find ( k ) {
 
@@ -400,9 +345,9 @@ class FourTree<K,V> {
     *
     * @return - The number of elements in the tree
     */
-    def countElems() {
+    def elemCount() {
 
-        elemCount( root )
+        countElems( root )
 
     }
 
@@ -411,14 +356,14 @@ class FourTree<K,V> {
     *
     * @return - The number of elements in the tree
     */
-    def private elemCount( rt ) {
+    def private countElems( rt ) {
         if( !rt ) {
             return 0
         }
-        elemCount( rt.getChild(1) ) +
-        elemCount( rt.getChild(2) ) +
-        elemCount( rt.getChild(3) ) +
-        elemCount( rt.getChild(4) ) +
+        countElems( rt.getChild(1) ) +
+        countElems( rt.getChild(2) ) +
+        countElems( rt.getChild(3) ) +
+        countElems( rt.getChild(4) ) +
         rt.countElems()
     }
 
