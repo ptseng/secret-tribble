@@ -1,6 +1,5 @@
 import java.lang.*
 import java.util.*
-import EnglishDictionary;
 
 /**
  * Created by sforgie on 2/16/14.
@@ -12,7 +11,7 @@ public class HashTable extends DataGen
 
     private int size
 
-    private static int buckets = 5381
+    private static int buckets = 10000
 
     private int collisions
 
@@ -85,17 +84,48 @@ public class HashTable extends DataGen
      *  HashTable and false if not
      *
      * @param key Object
-     * @return  int -1 if not in the table otherwise the traversal number
-     *              it took to get there
+     * @return  boolean found = true not found = false
      */
-    public int ContainsKey(Object key)
+    public boolean ContainsKey(Object key)
+    {
+        def index = Hash(key)
+
+        def l = hashtable[index]
+
+        if(l != null)
+        {
+            def iter = l.iterator()
+
+            while(iter.hasNext())
+            {
+                if(iter.next().matchKey(key))
+                    return true
+            }
+        }
+
+        return false
+    }
+
+
+
+
+    /**
+     *  Return the number of traversals it took to find a given key
+     *
+     * @param key Object
+     * @return  int -1 if not in the table and no matching hashes otherwise the traversal number
+     *              it took to get there and negative if matched hash value but not in the list
+     */
+    public int CountTraversalsKey(Object key)
     {
         def index = Hash(key)
         def traversal = 0
 
-        if(hashtable[index] != null)
+        def l = hashtable[index];
+
+        if(l != null) // && l.head().value.equals(value))
         {
-            def iter = hashtable[index].iterator()
+            def iter = l.iterator()
 
             while(iter.hasNext())
             {
@@ -105,9 +135,38 @@ public class HashTable extends DataGen
                     return traversal
             }
         }
-
-        return -1
+        return -traversal
     }
+
+    /**
+     * Return true if a given value is present in
+     * the hashtable and false if not
+     *
+     * @param value  Object
+     * @return  boolean found = true not found = false
+     */
+    public boolean ContainsValue(Object value)
+    {
+
+        for(LinkedList<Data> l : hashtable)
+        {
+            if(l != null )  //&& l.head().value.equals(value))
+            {
+                def iter = l.iterator()
+
+                while(iter.hasNext())
+                {
+                    if(iter.next().value.equals(value))
+                        return true
+                }
+            }
+        }
+
+        return false
+
+    }
+
+
 
     /**
      * Return true if a given value is present in
@@ -117,28 +176,35 @@ public class HashTable extends DataGen
      * @return  int -1 if not in the table otherwise the traversal number
      *              it took to get there
      */
-    public int ContainsValue(Object value)
+    public int CountTraversalsValue(Object value)
     {
-        def traversal = 0
+        def DNE = 0
 
         for(LinkedList<Data> l : hashtable)
         {
-            if(l != null && l.head().value.equals(value))
-                return 0
-            def iter = l.iterator()
+            def traversal = 0
 
-            while(iter.hasNext())
+            if(l != null)
             {
-                ++traversal
+                def iter = l.iterator()
 
-                if(iter.next().value.equals(value))
-                    return traversal
+                while(iter.hasNext())
+                {
+                    ++traversal
+
+                    if(iter.next().value.equals(value))
+                        return traversal
+                }
+                DNE += traversal
             }
+
         }
 
-        return -1
+        return -DNE
 
     }
+
+
 
     /**
      * Returns true if size is 0 indicating the
@@ -219,9 +285,9 @@ public class HashTable extends DataGen
 
         assert ht.Size() == 0
 
-        assert ht.ContainsKey("A") == -1
+        assert !ht.ContainsKey("A")
 
-        assert ht.ContainsValue("A") == -1
+        assert !ht.ContainsValue("A")
 
         assert ht.NumberOfCollisions() == 0
 
@@ -244,11 +310,11 @@ public class HashTable extends DataGen
 
         timeit ("Timing test")
         {
-            assert ht.ContainsKey("AITCH") != -1
-            assert ht.ContainsKey("COMPUTER") != -1
-            assert ht.ContainsKey("FARCE") != -1
-            assert ht.ContainsKey("ZEBRA") != -1
-            assert ht.ContainsKey("TWERKING") == -1       // Twerking did not exist in 1913
+            assert ht.ContainsKey("AITCH")
+            assert ht.ContainsKey("COMPUTER")
+            assert ht.ContainsKey("FARCE")
+            assert ht.ContainsKey("ZEBRA")
+            assert !ht.ContainsKey("TWERKING")      // Twerking did not exist in 1913
 
             //assert ht.get("VAMPIRE") == "Either one of two or more species of South American blood-sucking bats belonging to the genera Desmodus and Diphylla. Thesebats are destitute of molar teeth, but have strong, sharp cuttingincisors with which they make punctured wounds from which they suckthe blood of horses, cattle, and other animals, as well as man,chiefly during sleep. They have a cæcal appendage to the stomach, inwhich the blood with which they gorge themselves is stored."
         }
@@ -283,17 +349,26 @@ public class HashTable extends DataGen
         }
 
 
+        /*
+            Code below compares searches for words in A Tale of Two Cities
+            dictionary (modeled as a HashMap) is assumed to be correct
+            someone smarter than me wrote it.
+            HashTable is my method that I am testing against to verify correct
+            values have been found.
+         */
+
 
         def taleoftwocities = EnglishDictionary.importATaleOfTwoCities() as ArrayList<String>
         def found = 0
         def missed = 0
+
 
         timeit("\nTime to search for words from A Tale of Two Cities(HashTable): ", 1, 2)
         {
             taleoftwocities.each
             {
 
-                if(ht.ContainsKey(it) != -1)
+                if(ht.ContainsKey(it))
                 {
                     found++
                 }
@@ -306,8 +381,8 @@ public class HashTable extends DataGen
         println "Misses: $missed"
 
 
-        found = 0
-        missed = 0
+        def foundD = 0
+        def missedD = 0
 
         timeit("\nTime to search for words from A Tale of Two Cities(dictionary):", 1, 2)
         {
@@ -315,16 +390,80 @@ public class HashTable extends DataGen
             {
                 if(dictionary.containsKey(it))
                 {
-                    found++
+                    foundD++
                 }
-                else missed++
+                else missedD++
             }
         }
 
 
 
-        println "Matches: $found"
-        println "Misses: $missed"
+        println "Matches: $foundD"
+        println "Misses: $missedD"
+
+
+        assert found == foundD
+
+        assert missed == missedD
+
+        def traversals = ht.CountTraversalsKey("AITCH")
+
+        println "Traversals for 'AITCH': $traversals"
+
+        traversals = ht.CountTraversalsKey("TWERK")
+        println "\nTraversals for 'TWERK': $traversals"
+
+        traversals = ht.CountTraversalsValue("Probably not in the dictionary")
+        println "\nTraversals for value not in the dictionary: $traversals"
+
+
+        def min = 0
+        def max = 0
+        taleoftwocities.each
+        {
+            def t = ht.CountTraversalsKey(it)
+
+            if(t > max)
+            {
+                max = t
+            }
+            else
+            {
+                if(t < min)
+                {
+                    min = t
+                }
+            }
+        }
+
+        println "Most traversals when found: $max"
+        println "Most traversals when not found: $min"
+
+
+
+        def test = new HashTable(1)
+
+        assert test.CountTraversalsKey("A") == 0
+        assert test.CountTraversalsValue("TRUCK") == 0
+
+        test.Insert("A","Phil")
+        test.Insert("C","Shawn")
+        test.Insert("B","Matt")
+
+        assert test.CountTraversalsKey("A") == 3
+        assert test.CountTraversalsKey("C") == 2
+        assert test.CountTraversalsKey("B") == 1
+
+        assert test.CountTraversalsKey("PH") == -3
+
+
+        assert test.CountTraversalsValue("Phil") == 3
+        assert test.CountTraversalsValue("Shawn") == 2
+        assert test.CountTraversalsValue("Matt") == 1
+        assert test.CountTraversalsValue("Truck") == -3
+
+
+
     }
 
 }
