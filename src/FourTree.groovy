@@ -35,8 +35,6 @@ class FourTree<K,V> {
         println "Number of nodes: $nodenum"
         println "Height of tree: $treeheight"
 
-        //println tree1.printInOrder()
-
         assert tree1.find( "PHREATIC" )
         assert tree1.find( "ILLECEBRATION" )
         assert tree1.find( "KNOWN" )
@@ -44,7 +42,10 @@ class FourTree<K,V> {
         assert !tree1.find( "HOOTENANNY" )
         assert !tree1.find( "COGITO ERGO SUM")
 
-        //engBook.each { println "$it: " + ( tree1.find( it ) ?: "NOT FOUND" ) }  // Produces too much output for console
+        new File( "FourTreeSearchResults.txt" ).withWriter { write ->
+            engBook.each { write.writeLine( "$it: " + ( tree1.find( it ) ?: "NOT FOUND" ) )
+            }
+        }
 
         def ct1 = 0
         def ct2 = 0
@@ -62,6 +63,9 @@ class FourTree<K,V> {
         println "Number of searches: " + engBook.size()
 
         assert engBook.size() == ct1+ct2
+
+        def clos = { engBook.each { tree1.find(it) } }
+        EnglishDictionary.timeit( "\nTime to search for all words: ", 1, 3, 3, clos )
 
     }
 
