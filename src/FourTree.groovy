@@ -10,15 +10,22 @@ class FourTree<K,V> {
     public static void main ( String [] args ) {
 
         FourTree tree1 = new FourTree<String,String>()
-        FourTree tree2 = new FourTree<Tuple, String>()
+        FourTree tree2 = new FourTree<Comparable, String>()
         FourTree tree3 = new FourTree<String,String>()
 
         def dataSet = new HashSet<Data<String,String>>()
-        def engDict = DataGen.import1913EnglishDictionary() as HashMap<String,String>
-        def engBook = DataGen.importATaleOfTwoCities() as ArrayList<String>
+        def engDict = EnglishDictionary.import1913EnglishDictionary() as HashMap<String,String>
+        def engBook = EnglishDictionary.importATaleOfTwoCities() as ArrayList<String>
 
         engDict.each { key, value -> def data = new Data<String,String>(key, value); dataSet.add( data ) }
         tree1.insert( dataSet )
+
+        assert engDict.containsKey( "PHREATIC" )
+        assert engDict.containsKey( "ILLECEBRATION" )
+        assert engDict.containsKey( "KNOWN" )
+        assert !engDict.containsKey( "BLARGLEFARGLE" )
+        assert !engDict.containsKey( "HOOTENANNY" )
+        assert !engDict.containsKey( "COGITO ERGO SUM")
 
         def nodenum = tree1.nodeCount()
         def elemnum = tree1.elemCount()
@@ -33,8 +40,32 @@ class FourTree<K,V> {
         assert tree1.find( "KNOWN" )
         assert !tree1.find( "BLARGLEFARGLE" )
         assert !tree1.find( "HOOTENANNY" )
+        assert !tree1.find( "COGITO ERGO SUM")
 
-        engBook.each { println "$it: " + ( tree1.find( it ) ?: "NOT FOUND" ) }  // Produces too much output for console
+        new File( "FourTreeSearchResults.txt" ).withWriter { write ->
+            engBook.each { write.writeLine( "$it: " + ( tree1.find( it ) ?: "NOT FOUND" ) )
+            }
+        }
+
+        def ct1 = 0
+        def ct2 = 0
+        engBook.each {
+            if( tree1.find( it ) ) {
+                ++ct1
+            }
+            else {
+                ++ct2
+            }
+        }
+
+        println "Matches: $ct1"
+        println "Misses: $ct2"
+        println "Number of searches: " + engBook.size()
+
+        assert engBook.size() == ct1+ct2
+
+        def clos = { engBook.each { tree1.find(it) } }
+        EnglishDictionary.timeit( "\nTime to search for all words: ", 1, 3, 3, clos )
 
     }
 
@@ -63,19 +94,20 @@ class FourTree<K,V> {
         def nodeKey1 = rt.getKey(1)
         def nodeKey2 = rt.getKey(2)
         def nodeKey3 = rt.getKey(3)
-        if ( elems == 1 && dataKey < nodeKey1 ) {
+
+        if ( elems == 1 && dataKey.compareTo( nodeKey1 ) < 0 ) {
             rt.setData( 2, rt.getData(1) )
             rt.setChild( 3, rt.getChild(2) )
             rt.setData( 1, tempData )
             rt.setChild( 1, leftNode )
             rt.setChild( 2, rightNode )
         }
-        else if( elems == 1 && dataKey >= nodeKey1 ) {
+        else if( elems == 1 && dataKey.compareTo( nodeKey1 ) >= 0 ) {
             rt.setData( 2, tempData )
             rt.setChild( 2, leftNode )
             rt.setChild( 3, rightNode )
         }
-        else if( elems == 2 && dataKey < nodeKey1 ) {
+        else if( elems == 2 && dataKey.compareTo( nodeKey1 ) < 0 ) {
             rt.setData( 3, rt.getData(2) )
             rt.setChild( 4, rt.getChild(3) )
             rt.setChild( 3, rt.getChild(2) )
@@ -84,7 +116,7 @@ class FourTree<K,V> {
             rt.setChild( 1, leftNode )
             rt.setChild( 2, rightNode )
         }
-        else if( elems == 2 && dataKey < nodeKey2 ) {
+        else if( elems == 2 && dataKey.compareTo( nodeKey2 ) < 0 ) {
             rt.setData( 3, rt.getData(2) )
             rt.setChild( 4, rt.getChild(3) )
             rt.setData( 2, tempData )
@@ -193,25 +225,25 @@ class FourTree<K,V> {
         def nodeKey3 = rt.getKey(3)
 
         if( rt.isLeaf() ) {
-            if( dataKey == nodeKey1 ) {
+            if( dataKey.compareTo( nodeKey1 ) == 0 ) {
                 rt.setData( 1, data )
             }
-            else if( dataKey == nodeKey2 ) {
+            else if( elems == 2 && dataKey.compareTo( nodeKey2 ) == 0 ) {
                 rt.setData( 2, data )
             }
-            else if ( elems == 1 && dataKey < nodeKey1 ) {
+            else if( elems == 1 && dataKey.compareTo( nodeKey1 ) < 0 ) {
                 rt.setData( 2, rt.getData(1) )
                 rt.setData( 1, data )
             }
-            else if( elems == 1 && dataKey > nodeKey1 ) {
+            else if( elems == 1 && dataKey.compareTo( nodeKey1 ) > 0 ) {
                 rt.setData( 2, data )
             }
-            else if( elems == 2 && dataKey < nodeKey1 ) {
+            else if( elems == 2 && dataKey.compareTo( nodeKey1 ) < 0 ) {
                 rt.setData( 3, rt.getData(2) )
                 rt.setData( 2, rt.getData(1) )
                 rt.setData( 1, data )
             }
-            else if( elems == 2 && dataKey < nodeKey2 ) {
+            else if( elems == 2 && dataKey.compareTo( nodeKey2 ) < 0 ) {
                 rt.setData( 3, rt.getData(2) )
                 rt.setData( 2, data )
             }
@@ -221,24 +253,45 @@ class FourTree<K,V> {
         }
 
         else {
-            if( dataKey < nodeKey1 ) {
+            if( dataKey.compareTo( nodeKey1 ) < 0 ) {
                 def nextElems = rt.getChild(1).countElems()
                 if( nextElems > 2 ) {
                     split( rt, 1 )
+                    if( dataKey.compareTo( rt.getKey(1) ) < 0 ) {
+                        add( data, rt.getChild(1) )
+                    }
+                    else {
+                        add( data, rt.getChild(2) )
+                    }
+                    return
                 }
                 add( data, rt.getChild(1) )
             }
-            else if( (!nodeKey2 && dataKey >= nodeKey1) || (nodeKey2 && dataKey < nodeKey2) ) {
+            else if( (!nodeKey2 && dataKey.compareTo( nodeKey1 ) >= 0) || (nodeKey2 && dataKey.compareTo( nodeKey2 ) < 0) ) {
                 def nextElems = rt.getChild(2).countElems()
                 if( nextElems > 2 ) {
                     split( rt, 2 )
+                    if( dataKey.compareTo( rt.getKey(2) ) < 0 ) {
+                        add( data, rt.getChild(2) )
+                    }
+                    else {
+                        add( data, rt.getChild(3) )
+                    }
+                    return
                 }
                 add( data, rt.getChild(2) )
             }
-            else if( (!nodeKey3 && dataKey >= nodeKey2) || (nodeKey3 && dataKey < nodeKey3) ) {
+            else if( (!nodeKey3 && dataKey.compareTo( nodeKey2 ) >= 0) || (nodeKey3 && dataKey.compareTo( nodeKey3 ) < 0) ) {
                 def nextElems = rt.getChild(3).countElems()
                 if( nextElems > 2 ) {
                     split( rt, 3 )
+                    if( dataKey.compareTo( rt.getKey(3) ) < 0 ) {
+                        add( data, rt.getChild(3) )
+                    }
+                    else {
+                        add( data, rt.getChild(4) )
+                    }
+                    return
                 }
                 add( data, rt.getChild(3) )
             }
@@ -283,22 +336,22 @@ class FourTree<K,V> {
         def nodeKey2 = rt.getKey(2)
         def nodeKey3 = rt.getKey(3)
 
-        if( k < nodeKey1 ) {
+        if( k.compareTo( nodeKey1 ) < 0 ) {
             return search( k, rt.getChild(1) )
         }
-        else if( k == nodeKey1 ) {
+        else if( k.compareTo( nodeKey1 ) == 0 ) {
             return rt.getValue(1)
         }
-        else if( k > nodeKey1 && ( !nodeKey2 || k < nodeKey2 ) ) {
+        else if( k.compareTo( nodeKey1 ) > 0 && ( !nodeKey2 || k.compareTo( nodeKey2 ) < 0 ) ) {
             return search( k, rt.getChild(2) )
         }
-        else if( k == nodeKey2 ) {
+        else if( k.compareTo( nodeKey2 ) == 0 ) {
             return rt.getValue(2)
         }
-        else if( k > nodeKey2 && ( !nodeKey3 || k < nodeKey3 ) ) {
+        else if( k.compareTo( nodeKey2 ) > 0 && ( !nodeKey3 || k.compareTo( nodeKey3 ) < 0 ) ) {
             return search( k, rt.getChild(3) )
         }
-        else if( k == nodeKey3 ) {
+        else if( k.compareTo( nodeKey3 ) == 0 ) {
             return rt.getValue(3)
         }
         else {
