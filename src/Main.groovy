@@ -4,7 +4,7 @@ class Main {
 
     def static engDict = EnglishDictionary.dictDataSet()
     def static engBook = EnglishDictionary.bookStringList()
-    def static randMap = RandomStringGen.generateDataSet( 40, true, true, true, 100000 )
+    def static randMap = RandomStringGen.generateDataSetFromSet( 40, true, true, true, 100000 )
     def static randList = RandomStringGen.generateStringList( 40, true, true, true, 100000 )
 
     def static testFourTree( message ) {

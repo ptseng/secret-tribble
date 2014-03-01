@@ -14,7 +14,7 @@ class FourTree<K,V> {
 
         def engDict = EnglishDictionary.dictDataSet()
         def engBook = EnglishDictionary.bookStringList()
-        def randData = RandomStringGen.generateDataSet( 20, true, true, true, 100000 )
+        def randData = RandomStringGen.generateDataSetFromSet( 20, true, true, true, 100000 )
         def randQueries = RandomStringGen.generateStringList( 20, true, true, true, 100000 )
 
         tree1.insert( engDict )
