@@ -37,7 +37,14 @@ class WorldCities extends DataGen {
 
         public byte[] getBytes()
         {
-            return ByteBuffer.allocate(4).putFloat((Float)this.lat).array() + ByteBuffer.allocate(4).putFloat((Float)this.lon).array()
+            def a = ByteBuffer.allocate(4).putFloat((Float)this.lat).array()
+            def b = ByteBuffer.allocate(4).putFloat((Float)this.lon).array()
+
+            byte[] c = new byte[a.length + b.length];
+            System.arraycopy(a, 0, c, 0, a.length);
+            System.arraycopy(b, 0, c, a.length, b.length);
+
+            return c
         }
     }
 

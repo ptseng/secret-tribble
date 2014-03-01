@@ -517,7 +517,7 @@ public class HashTable<K,V> extends DataGen
 
         def cities =  WorldCities.importWorldCities() as HashMap<WorldCities.Coordinates, String>
 
-        def citiesTest = new HashTable<WorldCities.Coordinates, String>(1, 131)
+        def citiesTest = new HashTable<WorldCities.Coordinates, String>(3, 131)
 
         cities.each{ citiesTest.Insert(it.key, it.value); if(it.value == "Portland") println it.key.hashCode(); }
 
