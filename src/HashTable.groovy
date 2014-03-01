@@ -344,6 +344,7 @@ public class HashTable<K,V> extends DataGen
         def ht = new HashTable<String, String>(2)
 
 
+
         assert ht.Size() == 0
         assert !ht.ContainsKey("A")
         assert !ht.ContainsValue("A")

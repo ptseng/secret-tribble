@@ -1,6 +1,5 @@
 import java.lang.*
 import java.util.*
-import groovy.json.JsonSlurper
 
 // FourTree is a 2-3-4 Tree using integer keys
 class FourTree<K,V> {
@@ -13,12 +12,10 @@ class FourTree<K,V> {
         FourTree tree2 = new FourTree<Comparable, String>()
         FourTree tree3 = new FourTree<String,String>()
 
-        def dataSet = new HashSet<Data<String,String>>()
-        def engDict = EnglishDictionary.import1913EnglishDictionary() as HashMap<String,String>
-        def engBook = EnglishDictionary.importATaleOfTwoCities() as ArrayList<String>
+        def engDict = EnglishDictionary.dictDataSet()
+        def engBook = EnglishDictionary.bookStringList()
 
-        engDict.each { key, value -> def data = new Data<String,String>(key, value); dataSet.add( data ) }
-        tree1.insert( dataSet )
+        tree1.insert( engDict )
 
         assert engDict.containsKey( "PHREATIC" )
         assert engDict.containsKey( "ILLECEBRATION" )
