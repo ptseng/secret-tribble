@@ -14,23 +14,16 @@ class FourTree<K,V> {
 
         def engDict = EnglishDictionary.dictDataSet()
         def engBook = EnglishDictionary.bookStringList()
+        def randData = RandomStringGen.generateDataSetFromSet( 20, true, true, true, 100000 )
+        def randQueries = RandomStringGen.generateStringList( 20, true, true, true, 100000 )
 
         tree1.insert( engDict )
+        tree3.insert( randData )
 
-        assert engDict.containsKey( "PHREATIC" )
-        assert engDict.containsKey( "ILLECEBRATION" )
-        assert engDict.containsKey( "KNOWN" )
-        assert !engDict.containsKey( "BLARGLEFARGLE" )
-        assert !engDict.containsKey( "HOOTENANNY" )
-        assert !engDict.containsKey( "COGITO ERGO SUM")
-
-        def nodenum = tree1.nodeCount()
-        def elemnum = tree1.elemCount()
-        def treeheight = tree1.height()
-
-        println "Number of elements: $elemnum"
-        println "Number of nodes: $nodenum"
-        println "Height of tree: $treeheight"
+        println "-------- TREE 1 --------"
+        println "Number of elements: ${tree1.elemCount()}"
+        println "Number of nodes: ${tree1.nodeCount()}"
+        println "Height of tree: ${tree1.height()}"
 
         assert tree1.find( "PHREATIC" )
         assert tree1.find( "ILLECEBRATION" )
@@ -39,10 +32,11 @@ class FourTree<K,V> {
         assert !tree1.find( "HOOTENANNY" )
         assert !tree1.find( "COGITO ERGO SUM")
 
-        new File( "FourTreeSearchResults.txt" ).withWriter { write ->
+        new File( "FourTreeSearchResults1.txt" ).withWriter { write ->
             engBook.each { write.writeLine( "$it: " + ( tree1.find( it ) ?: "NOT FOUND" ) )
             }
         }
+        println "Results of search ATaleOfTwoCities -> EnglishDictionary written to file."
 
         def ct1 = 0
         def ct2 = 0
@@ -62,6 +56,37 @@ class FourTree<K,V> {
         assert engBook.size() == ct1+ct2
 
         def clos = { engBook.each { tree1.find(it) } }
+        EnglishDictionary.timeit( "\nTime to search for all words: ", 1, 3, 3, clos )
+
+        println "\n\n-------- TREE 3 --------"
+        println "Number of elements: ${tree3.elemCount()}"
+        println "Number of nodes: ${tree3.nodeCount()}"
+        println "Height of tree: ${tree3.height()}"
+
+        new File( "FourTreeSearchResults3.txt" ).withWriter { write ->
+            randQueries.each { write.writeLine( "$it: " + ( tree3.find( it ) ?: "NOT FOUND" ) )
+            }
+        }
+        println "Results of search RandomString -> RandomString written to file."
+
+        ct1 = 0
+        ct2 = 0
+        randQueries.each {
+            if( tree3.find( it ) ) {
+                ++ct1
+            }
+            else {
+                ++ct2
+            }
+        }
+
+        println "Matches: $ct1"
+        println "Misses: $ct2"
+        println "Number of searches: " + randQueries.size()
+
+        assert randQueries.size() == ct1+ct2
+
+        clos = { engBook.each { tree3.find(it) } }
         EnglishDictionary.timeit( "\nTime to search for all words: ", 1, 3, 3, clos )
 
     }
