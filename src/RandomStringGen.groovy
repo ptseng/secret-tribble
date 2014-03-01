@@ -8,9 +8,16 @@ static class RandomStringGen {
 
     }
 
-    def generateMap(  ) {
+    def generateList( length, letters, numbers, size ) {
 
-        def randSet = new HashMap<String,String>()
+        def randList = new ArrayList<String>()
+        
+
+    }
+
+    def generateMap( length, letters, numbers, size ) {
+
+        def randMap = new HashMap<String,String>()
 
 
     }
