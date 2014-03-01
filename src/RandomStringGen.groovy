@@ -139,7 +139,7 @@ class RandomStringGen {
         def dataSet = new HashSet<Data<String,String>>()
         def randSet = generateStringSet( length, letters, numbers, randomSize, setSize ).toList()
 
-        for ( i in 0..setSize - 2 ) {
+        for ( i in (0..setSize - 2).step(2) ) {
             def stringA = randSet.get( i )
             def stringB = randSet.get( i + 1 )
             def data = new Data<String,String>( stringA, stringB )
