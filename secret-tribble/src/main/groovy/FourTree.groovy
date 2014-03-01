@@ -1,6 +1,7 @@
 import java.lang.*
 import java.util.*
-import groovy.json.JsonSlurper
+@Grab(group='commons-lang', module='commons-lang', version='2.4')
+import org.apache.commons.lang.WordUtils
 
 // FourTree is a 2-3-4 Tree using integer keys
 class FourTree<K,V> {
