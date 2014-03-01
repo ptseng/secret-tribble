@@ -2,7 +2,7 @@ import org.apache.commons.lang.*
 
 class RandomStringGen {
 
-    def static numGen = new Random(System.currentTimeMillis())
+    def static numGen = new Random( System.currentTimeMillis() )
 
     /*
     * Generates a fixed or random-length string of alphanumeric characters
@@ -17,7 +17,8 @@ class RandomStringGen {
         def randString = RandomStringUtils.random( length, letters, numbers )
 
         if ( randomSize ) {
-            randString = randString.substring ( 0, (numGen % length) + 1 )
+            def upperBound = Math.min( Math.abs(numGen.nextInt()) % length + 1, length - 1 )
+            randString = randString.substring ( 0, upperBound )
         }
 
         randString
@@ -38,10 +39,7 @@ class RandomStringGen {
         def randList = new ArrayList<String>()
 
         for ( i in 0..size ) {
-            def insertString = generateString( length, letters, numbers )
-            if ( randomSize ) {
-                insertString = insertString.substring ( 0, (numGen % length) + 1 )
-            }
+            def insertString = generateString( length, letters, numbers, randomSize )
             randList.add insertString
         }
 
@@ -62,17 +60,12 @@ class RandomStringGen {
     def static generateMap( length, letters, numbers, randomSize, size ) {
 
         def randMap = new HashMap<String,String>()
+        def randList = generateStringList( length, letters, numbers, randomSize, size * 2 )
 
-        for ( i in 0..size ) {
-            def insertString1 = generateString( length, letters, numbers )
-            if ( randomSize ) {
-                insertString1 = insertString1.substring ( 0, (numGen % length) + 1 )
-            }
-            def insertString2 = generateString( length, letters, numbers )
-            if ( randomSize ) {
-                insertString2 = insertString2.substring ( 0, (numGen % length) + 1 )
-            }
-            randMap.put insertString1, insertString2
+        for ( i in (0..size).step(2) ) {
+            def stringA = randList.get( i )
+            def stringB = randList.get( i + 1 )
+            randMap.put stringA, stringB
         }
 
         randMap
@@ -101,6 +94,13 @@ class RandomStringGen {
     }
 
     public static void main( String [] args ) {
+
+        def testDataMap = generateDataSet( 20, true, true, true, 50 )
+
+        testDataMap.each() {
+            println "KEY:   ${it.getKey()}"
+            println "VALUE: ${it.getValue()}"
+        }
 
     }
 
