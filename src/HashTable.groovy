@@ -10,14 +10,35 @@ public class HashTable<K,V> extends DataGen
 
     private LinkedList<Data<K,V>> [] hashtable
 
+    /**
+     * Number of unique values held in the hashtable
+     */
     private int size
 
-    private static int buckets = 10000
+    /**
+     * Default number of buckets
+     */
+    private static int buckets = 5381
 
+    /**
+     * The number of collisions counted as keys are added
+     */
     private int collisions
 
-    private int function
+    /**
+     * Indicates which hash function to use.
+     *
+     * 1) java Object hashCode
+     * 2) java security cryptographic hash function (Md5)
+     *
+     * @see #hashCode()
+     * @see #CryptoHash(java.lang.Object)
+     */
+    private static int function = 1
 
+    /**
+     * MessageDigest object used to create a Md5 hashing object
+     */
     private MessageDigest md5
 
     /**
@@ -26,9 +47,9 @@ public class HashTable<K,V> extends DataGen
      */
     public HashTable( f )
     {
-        function = f
+        if(f == 1 || f == 2)  function = f
 
-        if(f == 3)
+        if(f == 2)
         {
             md5 = MessageDigest.getInstance("MD5")
         }
@@ -45,9 +66,9 @@ public class HashTable<K,V> extends DataGen
      */
     public HashTable( f, b )
     {
-        function = f
+        if(f == 1 || f == 2)  function = f
 
-        if(f == 3)
+        if(f == 2)
         {
             md5 = MessageDigest.getInstance("MD5")
         }
@@ -72,7 +93,7 @@ public class HashTable<K,V> extends DataGen
     {
         def d = new Data<K,V>(key, value)
 
-        int index = Hash(key)
+        int index = GetIndex(key)
 
         if(hashtable[index] == null)
         {
@@ -108,7 +129,7 @@ public class HashTable<K,V> extends DataGen
      */
     public boolean ContainsKey( key )
     {
-        def index = Hash(key)
+        def index = GetIndex(key)
 
         def l = hashtable[index]
 
@@ -139,7 +160,7 @@ public class HashTable<K,V> extends DataGen
      */
     public int CountTraversalsKey( key )
     {
-        def index = Hash(key)
+        def index = GetIndex(key)
         def traversal = 0
 
         def l = hashtable[index];
@@ -258,42 +279,34 @@ public class HashTable<K,V> extends DataGen
     /**
      * Hashes a given key using:
      * 1) Default (Object).hashCode()
-     * 2) BinaryHash
-     * 3) Md5 hashfunction
+     * 2) Md5 hashfunction
      * and mods it against the number of buckets
      *
-     * This will be a basic test to compare
-     * against with other models of hashing
-     * functions
      *
      * @see #hashCode()
+     * @see #CryptoHash(java.lang.Object)
      * @param key Object
      *
      * @return int   An index of the hashtable
      */
-    public int Hash( key )
+    public int GetIndex( key )
     {
       switch(function)
       {
           case 1:
               return key.hashCode()%buckets
           case 2:
-              return BinaryHash( key )%buckets
-          case 3:
               return CryptoHash( key )%buckets
       }
     }
 
-
-
-    public int BinaryHash( key )
-    {
-
-
-    }
-
-
-
+    /**
+     * Hashes a key using Md5 cryptographic
+     * hash function.
+     *
+     * @param key Object
+     * @return  BigInteger
+     */
     public int CryptoHash( key )
     {
         md5.update( key.getBytes() )
@@ -328,17 +341,13 @@ public class HashTable<K,V> extends DataGen
         def dictionary = EnglishDictionary.import1913EnglishDictionary() as HashMap<String, String>
 
 
-        def ht = new HashTable<String, String>(3)
+        def ht = new HashTable<String, String>(2)
 
 
         assert ht.Size() == 0
-
         assert !ht.ContainsKey("A")
-
         assert !ht.ContainsValue("A")
-
         assert ht.NumberOfCollisions() == 0
-
         assert ht.IsEmpty()
 
 
@@ -432,31 +441,24 @@ public class HashTable<K,V> extends DataGen
         def foundD = 0
         def missedD = 0
 
-        //timeit("\nTime to search for words from A Tale of Two Cities(dictionary):")
-        //{
-            taleoftwocities.each
+        taleoftwocities.each
+        {
+            if(dictionary.containsKey(it))
             {
-                if(dictionary.containsKey(it))
-                {
-                    foundD++
-                }
-                else missedD++
+                foundD++
             }
-        //}
-
+            else missedD++
+        }
 
 
         println "Matches: $foundD"
         println "Misses: $missedD"
 
         assert foundD + missedD == taleoftwocities.size();
-
         assert found == foundD
-
         assert missed == missedD
 
         def traversals = ht.CountTraversalsKey("AITCH")
-
         println "Traversals for 'AITCH': $traversals"
 
         traversals = ht.CountTraversalsKey("TWERK")
@@ -502,7 +504,6 @@ public class HashTable<K,V> extends DataGen
         assert test.CountTraversalsKey("A") == 3
         assert test.CountTraversalsKey("C") == 2
         assert test.CountTraversalsKey("B") == 1
-
         assert test.CountTraversalsKey("PH") == -3
 
 
@@ -516,14 +517,11 @@ public class HashTable<K,V> extends DataGen
 
 
         def cities =  WorldCities.importWorldCities() as HashMap<WorldCities.Coordinates, String>
-
         def citiesTest = new HashTable<WorldCities.Coordinates, String>(3, 131)
 
         cities.each{ citiesTest.Insert(it.key, it.value); if(it.value == "Portland") println it.key.hashCode(); }
 
         assert citiesTest.Size() == cities.size()
-
-
         assert citiesTest.Size() == 661
         assert citiesTest.ContainsValue("Portland")
         assert citiesTest.ContainsValue("London")
@@ -531,7 +529,6 @@ public class HashTable<K,V> extends DataGen
 
         def portland = new WorldCities.Coordinates(lat:45.517F, lon:-122.667F)
         def testcity = new WorldCities.Coordinates(lat: 45.517F, lon:-133.123F)
-        //def testcity2 = new WorldCities.Coordinates(lat: 45.517F, lon:-133.123F)
         def longyearbyennew = new WorldCities.Coordinates(lat: 78.217F, lon:15.55F)
 
         citiesTest.Insert(testcity, "TestCity")
