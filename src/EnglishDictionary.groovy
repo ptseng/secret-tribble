@@ -12,6 +12,30 @@ public class EnglishDictionary extends DataGen {
         return (new File("ataleoftwocities.txt").text).replaceAll("[^a-zA-Z ]", "").toUpperCase().split("\\s+");
     }
 
+    /*
+    * Creates a HashSet of Data<String,String> elements from the 1913 dictionary
+    */
+    static def dictDataSet() {
+
+        def dataSet = new HashSet<Data<String,String>>()
+        def dictMap = import1913EnglishDictionary() as HashMap<String,String>
+
+        dictMap.each { key, value -> def data = new Data<String,String>(key, value); dataSet.add( data ) }
+
+        dataSet
+
+    }
+
+    /*
+    * Creates a an ArrayList of String elements from "A Tale of Two Cities"
+    */
+    static def bookStringList() {
+
+        def dataList = importATaleOfTwoCities() as ArrayList<String>
+
+        dataList
+
+    }
 
     public static void main(String [] args)
     {
