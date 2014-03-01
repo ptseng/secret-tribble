@@ -17,20 +17,9 @@ class FourTree<K,V> {
 
         tree1.insert( engDict )
 
-        assert engDict.containsKey( "PHREATIC" )
-        assert engDict.containsKey( "ILLECEBRATION" )
-        assert engDict.containsKey( "KNOWN" )
-        assert !engDict.containsKey( "BLARGLEFARGLE" )
-        assert !engDict.containsKey( "HOOTENANNY" )
-        assert !engDict.containsKey( "COGITO ERGO SUM")
-
-        def nodenum = tree1.nodeCount()
-        def elemnum = tree1.elemCount()
-        def treeheight = tree1.height()
-
-        println "Number of elements: $elemnum"
-        println "Number of nodes: $nodenum"
-        println "Height of tree: $treeheight"
+        println "Number of elements: ${tree1.nodeCount()}"
+        println "Number of nodes: ${tree1.elemCount()}"
+        println "Height of tree: ${tree1.height()}"
 
         assert tree1.find( "PHREATIC" )
         assert tree1.find( "ILLECEBRATION" )
@@ -43,6 +32,7 @@ class FourTree<K,V> {
             engBook.each { write.writeLine( "$it: " + ( tree1.find( it ) ?: "NOT FOUND" ) )
             }
         }
+        println "Results of search ATaleOfTwoCities -> EnglishDictionary written to file."
 
         def ct1 = 0
         def ct2 = 0
