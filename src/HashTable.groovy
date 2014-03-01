@@ -1,5 +1,6 @@
 import java.lang.*
 import java.util.*
+import java.security.*
 
 /**
  * Created by sforgie on 2/16/14.
@@ -15,12 +16,23 @@ public class HashTable<K,V> extends DataGen
 
     private int collisions
 
+    private int function
+
+    private MessageDigest md5
+
     /**
      * Constructor for a Hashtable as an array of
      * Linked Lists
      */
-    public HashTable()
+    public HashTable( f )
     {
+        function = f
+
+        if(f == 3)
+        {
+            md5 = MessageDigest.getInstance("MD5")
+        }
+
         hashtable  =  new  LinkedList<Data<K,V>> [(buckets+1)]
         size = 0
         collisions = 0
@@ -31,9 +43,17 @@ public class HashTable<K,V> extends DataGen
      * the number of buckets to use
      *
      */
-    public HashTable(int b)
+    public HashTable( f, b )
     {
+        function = f
+
+        if(f == 3)
+        {
+            md5 = MessageDigest.getInstance("MD5")
+        }
+
         buckets = b
+
 
         hashtable  =  new  LinkedList<Data<K,V>> [(buckets+1)]
         size = 0
@@ -236,7 +256,10 @@ public class HashTable<K,V> extends DataGen
 
 
     /**
-     * Hashes a given key using Object.hashCode()
+     * Hashes a given key using:
+     * 1) Default (Object).hashCode()
+     * 2) BinaryHash
+     * 3) Md5 hashfunction
      * and mods it against the number of buckets
      *
      * This will be a basic test to compare
@@ -250,10 +273,33 @@ public class HashTable<K,V> extends DataGen
      */
     public int Hash( key )
     {
-       return key.hashCode()%buckets
+      switch(function)
+      {
+          case 1:
+              return key.hashCode()%buckets
+          case 2:
+              return BinaryHash( key )%buckets
+          case 3:
+              return CryptoHash( key )%buckets
+      }
     }
 
 
+
+    public int BinaryHash( key )
+    {
+
+
+    }
+
+
+
+    public int CryptoHash( key )
+    {
+        md5.update( key.getBytes() )
+
+        return new BigInteger(1, md5.digest())
+    }
 
 
     /**
@@ -282,7 +328,7 @@ public class HashTable<K,V> extends DataGen
         def dictionary = EnglishDictionary.import1913EnglishDictionary() as HashMap<String, String>
 
 
-        def ht = new HashTable<String, String>()
+        def ht = new HashTable<String, String>(3)
 
 
         assert ht.Size() == 0
@@ -325,7 +371,7 @@ public class HashTable<K,V> extends DataGen
 
 
 
-        println("Traversals required for 'AITCH': " + ht.ContainsKey("AITCH") + "\n")
+        println("Traversals required for 'AITCH': " + ht.CountTraversalsKey("AITCH") + "\n")
 
        assert dictionary.size() != 0
        timeit ("Some data to compare against")
@@ -444,7 +490,7 @@ public class HashTable<K,V> extends DataGen
 
 
 
-        def test = new HashTable(1)
+        def test = new HashTable(1,1)
 
         assert test.CountTraversalsKey("A") == 0
         assert test.CountTraversalsValue("TRUCK") == 0
@@ -471,7 +517,7 @@ public class HashTable<K,V> extends DataGen
 
         def cities =  WorldCities.importWorldCities() as HashMap<WorldCities.Coordinates, String>
 
-        def citiesTest = new HashTable<WorldCities.Coordinates, String>(131)
+        def citiesTest = new HashTable<WorldCities.Coordinates, String>(1, 131)
 
         cities.each{ citiesTest.Insert(it.key, it.value); if(it.value == "Portland") println it.key.hashCode(); }
 

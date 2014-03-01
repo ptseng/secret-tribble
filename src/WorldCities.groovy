@@ -1,5 +1,7 @@
 import groovy.json.JsonSlurper
 
+import java.nio.ByteBuffer
+
 class WorldCities extends DataGen {
 
     static class Coordinates<K extends Comparable<K>, J extends Comparable<J>>
@@ -30,6 +32,12 @@ class WorldCities extends DataGen {
         public int hashCode()
         {
             return this.lat.hashCode() + this.lon.hashCode()
+        }
+
+
+        public byte[] getBytes()
+        {
+            return ByteBuffer.allocate(4).putFloat((Float)this.lat).array() + ByteBuffer.allocate(4).putFloat((Float)this.lon).array()
         }
     }
 
