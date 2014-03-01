@@ -24,6 +24,13 @@ class WorldCities extends DataGen {
 
             return cmp;
         }
+
+
+        @Override
+        public int hashCode()
+        {
+            return this.lat.hashCode() + this.lon.hashCode()
+        }
     }
 
     static double coordDistance(Float latitude1, Float longitude1, Float latitude2, Float longitude2)

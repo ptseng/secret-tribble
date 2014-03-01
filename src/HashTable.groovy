@@ -4,10 +4,10 @@ import java.util.*
 /**
  * Created by sforgie on 2/16/14.
  */
-public class HashTable extends DataGen
+public class HashTable<K,V> extends DataGen
 {
 
-    private LinkedList<Data> [] hashtable
+    private LinkedList<Data<K,V>> [] hashtable
 
     private int size
 
@@ -21,7 +21,7 @@ public class HashTable extends DataGen
      */
     public HashTable()
     {
-        hashtable  =  new  LinkedList<Data> [(buckets+1)]
+        hashtable  =  new  LinkedList<Data<K,V>> [(buckets+1)]
         size = 0
         collisions = 0
     }
@@ -35,7 +35,7 @@ public class HashTable extends DataGen
     {
         buckets = b
 
-        hashtable  =  new  LinkedList<Data> [(buckets+1)]
+        hashtable  =  new  LinkedList<Data<K,V>> [(buckets+1)]
         size = 0
         collisions = 0
     }
@@ -48,15 +48,15 @@ public class HashTable extends DataGen
      * @param key  Object
      * @param value  Object
      */
-    public void Insert(Object key, Object value)
+    public void Insert( key, value)
     {
-        def d = new Data(key, value)
+        def d = new Data<K,V>(key, value)
 
         int index = Hash(key)
 
         if(hashtable[index] == null)
         {
-            hashtable[index] = new LinkedList<Data>()
+            hashtable[index] = new LinkedList<Data<K,V>>()
         }
         else
         {
@@ -68,7 +68,7 @@ public class HashTable extends DataGen
                 /**
                  * TODO Return something meaningful when entering duplicate key
                  */
-                if(iter.next().matchKey(key))
+                  if(key.compareTo(iter.next().key) == 0)
                     return
             }
 
@@ -86,7 +86,7 @@ public class HashTable extends DataGen
      * @param key Object
      * @return  boolean found = true not found = false
      */
-    public boolean ContainsKey(Object key)
+    public boolean ContainsKey( key )
     {
         def index = Hash(key)
 
@@ -98,7 +98,8 @@ public class HashTable extends DataGen
 
             while(iter.hasNext())
             {
-                if(iter.next().matchKey(key))
+                //if(iter.next().matchKey(key))
+                if(key.compareTo(iter.next().key) == 0)
                     return true
             }
         }
@@ -116,7 +117,7 @@ public class HashTable extends DataGen
      * @return  int -1 if not in the table and no matching hashes otherwise the traversal number
      *              it took to get there and negative if matched hash value but not in the list
      */
-    public int CountTraversalsKey(Object key)
+    public int CountTraversalsKey( key )
     {
         def index = Hash(key)
         def traversal = 0
@@ -131,7 +132,8 @@ public class HashTable extends DataGen
             {
                 ++traversal
 
-                if(iter.next().matchKey(key))
+                //if(iter.next().matchKey(key))
+                if(key.compareTo(iter.next().key) == 0)
                     return traversal
             }
         }
@@ -145,7 +147,7 @@ public class HashTable extends DataGen
      * @param value  Object
      * @return  boolean found = true not found = false
      */
-    public boolean ContainsValue(Object value)
+    public boolean ContainsValue( value )
     {
 
         for(LinkedList<Data> l : hashtable)
@@ -176,7 +178,7 @@ public class HashTable extends DataGen
      * @return  int -1 if not in the table otherwise the traversal number
      *              it took to get there
      */
-    public int CountTraversalsValue(Object value)
+    public int CountTraversalsValue( value )
     {
         def DNE = 0
 
@@ -246,7 +248,7 @@ public class HashTable extends DataGen
      *
      * @return int   An index of the hashtable
      */
-    public int Hash(Object key)
+    public int Hash( key )
     {
        return key.hashCode()%buckets
     }
@@ -280,7 +282,7 @@ public class HashTable extends DataGen
         def dictionary = EnglishDictionary.import1913EnglishDictionary() as HashMap<String, String>
 
 
-        def ht = new HashTable()
+        def ht = new HashTable<String, String>()
 
 
         assert ht.Size() == 0
@@ -363,8 +365,8 @@ public class HashTable extends DataGen
         def missed = 0
 
 
-        timeit("\nTime to search for words from A Tale of Two Cities(HashTable): ", 1, 2)
-        {
+        //timeit("\nTime to search for words from A Tale of Two Cities(HashTable): ")
+        //{
             taleoftwocities.each
             {
 
@@ -375,7 +377,7 @@ public class HashTable extends DataGen
                 else missed++
             }
 
-        }
+        //}
 
         println "Matches: $found"
         println "Misses: $missed"
@@ -384,8 +386,8 @@ public class HashTable extends DataGen
         def foundD = 0
         def missedD = 0
 
-        timeit("\nTime to search for words from A Tale of Two Cities(dictionary):", 1, 2)
-        {
+        //timeit("\nTime to search for words from A Tale of Two Cities(dictionary):")
+        //{
             taleoftwocities.each
             {
                 if(dictionary.containsKey(it))
@@ -394,13 +396,14 @@ public class HashTable extends DataGen
                 }
                 else missedD++
             }
-        }
+        //}
 
 
 
         println "Matches: $foundD"
         println "Misses: $missedD"
 
+        assert foundD + missedD == taleoftwocities.size();
 
         assert found == foundD
 
@@ -436,8 +439,8 @@ public class HashTable extends DataGen
             }
         }
 
-        println "Most traversals when found: $max"
-        println "Most traversals when not found: $min"
+        println "Most traversals when key found: $max"
+        println "Most traversals when key not found: $min"
 
 
 
@@ -463,6 +466,43 @@ public class HashTable extends DataGen
         assert test.CountTraversalsValue("Truck") == -3
 
 
+
+
+
+        def cities =  WorldCities.importWorldCities() as HashMap<WorldCities.Coordinates, String>
+
+        def citiesTest = new HashTable<WorldCities.Coordinates, String>(131)
+
+        cities.each{ citiesTest.Insert(it.key, it.value); if(it.value == "Portland") println it.key.hashCode(); }
+
+        assert citiesTest.Size() == cities.size()
+
+
+        assert citiesTest.Size() == 661
+        assert citiesTest.ContainsValue("Portland")
+        assert citiesTest.ContainsValue("London")
+        assert citiesTest.ContainsValue("Beijing")
+
+        def portland = new WorldCities.Coordinates(lat:45.517F, lon:-122.667F)
+        def testcity = new WorldCities.Coordinates(lat: 45.517F, lon:-133.123F)
+        //def testcity2 = new WorldCities.Coordinates(lat: 45.517F, lon:-133.123F)
+        def longyearbyennew = new WorldCities.Coordinates(lat: 78.217F, lon:15.55F)
+
+        citiesTest.Insert(testcity, "TestCity")
+
+
+        timeit("Testing Lookup in Cities Hashtable")
+        {
+            assert citiesTest.ContainsKey(testcity)
+            assert citiesTest.ContainsKey(longyearbyennew)
+            assert citiesTest.ContainsKey(portland)
+
+        }
+
+
+        println "\nTraversals to find testcity: " + citiesTest.CountTraversalsKey(testcity)
+        println "\nTraversals to find longyearbyennew: " + citiesTest.CountTraversalsKey(longyearbyennew)
+        println "\nTraversals to find portland: " + citiesTest.CountTraversalsKey(portland)
 
     }
 
