@@ -4,6 +4,8 @@ class Main {
 
     def static engDict = EnglishDictionary.dictDataSet()
     def static engBook = EnglishDictionary.bookStringList()
+    def static realCityCoordinates = WorldCities.importWorldCitiesAsDataSet()
+    //def static randomCoordinates = WorldCities.generateRandomCoordinates()
     def static randMap = RandomStringGen.generateDataSetFromSet( 40, true, true, true, 100000 )
     def static randList = RandomStringGen.generateStringList( 40, true, true, true, 100000 )
 
@@ -18,7 +20,7 @@ class Main {
         println()
         fourTreeSuite( tree1, engDict, randList, "Dictionary", "Random" )
         println()
-        
+
         fourTreeSuite( tree3, randMap, engBook, "Random", "Book" )
         println()
         fourTreeSuite( tree3, randMap, randList, "Random", "Random" )
