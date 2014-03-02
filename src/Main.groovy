@@ -5,7 +5,7 @@ class Main {
     def static engDict = EnglishDictionary.dictDataSet()
     def static engBook = EnglishDictionary.bookStringList()
     def static realCityCoordinates = WorldCities.importWorldCitiesAsDataSet()
-    //def static randomCoordinates = WorldCities.generateRandomCoordinates()
+    def static randomCoordinates = WorldCities.generateRandomCoordinates( 1000 )
     def static randMap = RandomStringGen.generateDataSetFromSet( 40, true, true, true, 100000 )
     def static randList = RandomStringGen.generateStringList( 40, true, true, true, 100000 )
 
@@ -20,7 +20,8 @@ class Main {
         println()
         fourTreeSuite( tree1, engDict, randList, "Dictionary", "Random" )
         println()
-
+        fourTreeSuite( tree2, realCityCoordinates, randomCoordinates, "GPS", "Random" )
+        println()
         fourTreeSuite( tree3, randMap, engBook, "Random", "Book" )
         println()
         fourTreeSuite( tree3, randMap, randList, "Random", "Random" )
@@ -36,7 +37,7 @@ class Main {
         def pass = 0;
         def treeClosure = { terms.each { tree.find(it) } }
         treePrintResults( "Results for ${name1} Tree with ${name2} Queries:", rates, inputSize )
-        for( i in 0..5 ) {
+        4.times {
             ++pass
             tree.clearTree()
             tree.insert( data )
