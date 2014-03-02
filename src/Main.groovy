@@ -4,6 +4,8 @@ class Main {
 
     def static engDict = EnglishDictionary.dictDataSet()
     def static engBook = EnglishDictionary.bookStringList()
+    def static realCityCoordinates = WorldCities.importWorldCitiesAsDataSet()
+    def static randomCoordinates = WorldCities.generateRandomCoordinates( 1000 )
     def static randMap = RandomStringGen.generateDataSetFromSet( 40, true, true, true, 100000 )
     def static randList = RandomStringGen.generateStringList( 40, true, true, true, 100000 )
 
@@ -18,7 +20,9 @@ class Main {
         println()
         fourTreeSuite( tree1, engDict, randList, "Dictionary", "Random" )
         println()
-        fourTreeSuite( tree1, randMap, engBook, "Random", "Book" )
+        fourTreeSuite( tree2, realCityCoordinates, randomCoordinates, "GPS", "Random" )
+        println()
+        fourTreeSuite( tree3, randMap, engBook, "Random", "Book" )
         println()
         fourTreeSuite( tree3, randMap, randList, "Random", "Random" )
         println()
@@ -26,12 +30,19 @@ class Main {
 
     def private static fourTreeSuite( tree, data, terms, name1, name2 ) {
 
+        tree.clearTree()
         tree.insert( data )
         def rates = treeHitRate( tree, terms )
         def inputSize = terms.size()
-        treePrintResults( "Results for ${name1} Tree with ${name2} Queries:", rates, inputSize )
+        def pass = 0;
         def treeClosure = { terms.each { tree.find(it) } }
-        DataGen.timeit( "\tTime to search for all words: ", 1, 3, 3, treeClosure )
+        treePrintResults( "Results for ${name1} Tree with ${name2} Queries:", rates, inputSize )
+        4.times {
+            ++pass
+            tree.clearTree()
+            tree.insert( data )
+            DataGen.timeit( "\tTime for pass ${pass}", 1, 3, 1, treeClosure )
+        }
 
     }
 

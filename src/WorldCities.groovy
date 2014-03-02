@@ -1,8 +1,11 @@
 import groovy.json.JsonSlurper
+import org.apache.commons.lang.*
 
 import java.nio.ByteBuffer
 
 class WorldCities extends DataGen {
+
+    def static floatGen = new Random( System.currentTimeMillis() )
 
     static class Coordinates<K extends Comparable<K>, J extends Comparable<J>>
             implements Comparable<Coordinates<K, J>>
@@ -77,6 +80,46 @@ class WorldCities extends DataGen {
         return coordsCity
     }
 
+    /*
+    * Converts Map of Coordinates/String into HashSet of Data objects with key == Coordinates, value == String
+    *
+    * @return HashSet
+    */
+    def static importWorldCitiesAsDataSet() {
+
+        def dataSet = new HashSet<Data<Coordinates,String>>()
+        def cityMap = importWorldCities()
+        cityMap.each { key, value -> def data = new Data<Coordinates,String>(key, value); dataSet.add( data ) }
+
+        dataSet
+
+    }
+
+    /*
+    * Generates a variable size ArrayList of Coordinates objects where lat and lon
+    * are random Float values between -180 and 180 truncated to 3 decimal places.
+    *
+    * @param iter Integer - The number of Coordinate objects to generate
+    * @return ArrayList
+    */
+    def static generateRandomCoordinates( iter ) {
+
+        def coordinateList = new ArrayList<Coordinates<Float,Float>>()
+
+        iter.times {
+            def latLeft = floatGen.nextInt() % 180
+            def latRight = floatGen.nextFloat()
+            def lat = latLeft.toFloat() + latRight
+            def lonLeft = floatGen.nextInt() % 180
+            def lonRight = floatGen.nextFloat()
+            def lon = lonLeft.toFloat() + lonRight
+            def coord = new Coordinates( lon:lon.round(3), lat:lat.round(3) )
+            coordinateList.add( coord )
+        }
+
+        coordinateList
+
+    }
 
     public static void main(String [] args)
     {
@@ -175,6 +218,10 @@ class WorldCities extends DataGen {
         println "BST Min Depth: " + citiesbst.minDepth()
         println "Traversals to Find All Cities: " + traversals
         println "Average Traversals Per City: " + (traversals/citiesbst.size()).setScale(2,1)
+
+        println()
+        def list = generateRandomCoordinates( 100 )
+        list.each { println "LAT: ${it.lat}\tLON: ${it.lon}" }
 
     }
 }
