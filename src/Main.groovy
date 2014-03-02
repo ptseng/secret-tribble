@@ -18,7 +18,8 @@ class Main {
         println()
         fourTreeSuite( tree1, engDict, randList, "Dictionary", "Random" )
         println()
-        fourTreeSuite( tree1, randMap, engBook, "Random", "Book" )
+        
+        fourTreeSuite( tree3, randMap, engBook, "Random", "Book" )
         println()
         fourTreeSuite( tree3, randMap, randList, "Random", "Random" )
         println()
@@ -26,12 +27,19 @@ class Main {
 
     def private static fourTreeSuite( tree, data, terms, name1, name2 ) {
 
+        tree.clearTree()
         tree.insert( data )
         def rates = treeHitRate( tree, terms )
         def inputSize = terms.size()
-        treePrintResults( "Results for ${name1} Tree with ${name2} Queries:", rates, inputSize )
+        def pass = 0;
         def treeClosure = { terms.each { tree.find(it) } }
-        DataGen.timeit( "\tTime to search for all words: ", 1, 3, 3, treeClosure )
+        treePrintResults( "Results for ${name1} Tree with ${name2} Queries:", rates, inputSize )
+        for( i in 0..5 ) {
+            ++pass
+            tree.clearTree()
+            tree.insert( data )
+            DataGen.timeit( "\tTime for pass ${pass}", 1, 3, 1, treeClosure )
+        }
 
     }
 
