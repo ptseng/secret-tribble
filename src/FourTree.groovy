@@ -494,4 +494,8 @@ class FourTree<K,V> {
         Math.max( leftMax, rightMax ) + 1
     }
 
+    def clearTree() {
+        root = null
+    }
+
 }
