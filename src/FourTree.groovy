@@ -271,6 +271,8 @@ class FourTree<K,V> {
     */
     def private search ( k, rt ) {
 
+        ++ops
+
         if( !rt ) {
             return null
         }
@@ -280,31 +282,24 @@ class FourTree<K,V> {
         def nodeKey3 = rt.getKey(3)
 
         if( k.compareTo( nodeKey1 ) < 0 ) {
-            ops = ops + 1
             return search( k, rt.getChild(1) )
         }
         else if( k.compareTo( nodeKey1 ) == 0 ) {
-            ops = ops + 1
             return rt.getValue(1)
         }
         else if( k.compareTo( nodeKey1 ) > 0 && ( !nodeKey2 || k.compareTo( nodeKey2 ) < 0 ) ) {
-            ops = ops + 2
             return search( k, rt.getChild(2) )
         }
         else if( k.compareTo( nodeKey2 ) == 0 ) {
-            ops = ops + 1
             return rt.getValue(2)
         }
         else if( k.compareTo( nodeKey2 ) > 0 && ( !nodeKey3 || k.compareTo( nodeKey3 ) < 0 ) ) {
-            ops = ops + 2
             return search( k, rt.getChild(3) )
         }
         else if( k.compareTo( nodeKey3 ) == 0 ) {
-            ops = ops + 1
             return rt.getValue(3)
         }
         else {
-            ops = ops + 1
             return search( k, rt.getChild(4) )
         }
 
@@ -430,12 +425,12 @@ class FourTree<K,V> {
     }
 
     /*
-    * Gets the number of comparisons made in the most recent search
+    * Gets the number of traversals made in the most recent search
     *
     * @return ops Integer
     */
     def getOps() {
-        ops
+        ops - 1
     }
 
 

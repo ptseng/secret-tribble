@@ -5,9 +5,9 @@ class Main {
     def static engDict = EnglishDictionary.dictDataSet()
     def static engBook = EnglishDictionary.bookStringList()
     def static realCityCoordinates = WorldCities.importWorldCitiesAsDataSet()
-    def static randomCoordinates = WorldCities.generateRandomCoordinates( 1000 )
-    def static randMap = RandomStringGen.generateDataSetFromSet( 40, true, true, true, 100000 )
-    def static randList = RandomStringGen.generateStringList( 40, true, true, true, 100000 )
+    def static randomCoordinates = WorldCities.generateRandomCoordinates( 100000 )
+    def static randMap = RandomStringGen.generateDataSetFromSet( 20, true, true, true, 100000 )
+    def static randList = RandomStringGen.generateStringList( 20, true, true, true, 100000 )
 
     def static testFourTree( message ) {
 
@@ -70,7 +70,7 @@ class Main {
         def sum = 0
         opsCount.each{ sum = sum + it }
         def avg = sum / opsCount.size()
-        println avg
+
         def counts = new Tuple( ct1, ct2, min, max, avg )
 
         counts
