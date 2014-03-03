@@ -1,12 +1,15 @@
 import java.lang.*
 import java.util.*
 
-// FourTree is a 2-3-4 Tree using integer keys
+// FourTree is a 2-3-4 Tree of Data object elements
 class FourTree<K,V> {
 
     private def FourTreeNode<K,V> root
     private def Integer ops
 
+    /*
+    * Constructor initializes empty tree
+    */
     public FourTree ( ) {
         root = null
         ops = 0
