@@ -1,98 +1,18 @@
 import java.lang.*
 import java.util.*
 
-// FourTree is a 2-3-4 Tree using integer keys
+// FourTree is a 2-3-4 Tree of Data object elements
 class FourTree<K,V> {
 
-    private def FourTreeNode<K,V> root;
+    private def FourTreeNode<K,V> root
+    private def Integer ops
 
-    public static void main ( String [] args ) {
-
-        FourTree tree1 = new FourTree<String,String>()
-        FourTree tree2 = new FourTree<Comparable, String>()
-        FourTree tree3 = new FourTree<String,String>()
-
-        def engDict = EnglishDictionary.dictDataSet()
-        def engBook = EnglishDictionary.bookStringList()
-        def randData = RandomStringGen.generateDataSetFromSet( 20, true, true, true, 100000 )
-        def randQueries = RandomStringGen.generateStringList( 20, true, true, true, 100000 )
-
-        tree1.insert( engDict )
-        tree3.insert( randData )
-
-        println "-------- TREE 1 --------"
-        println "Number of elements: ${tree1.elemCount()}"
-        println "Number of nodes: ${tree1.nodeCount()}"
-        println "Height of tree: ${tree1.height()}"
-
-        assert tree1.find( "PHREATIC" )
-        assert tree1.find( "ILLECEBRATION" )
-        assert tree1.find( "KNOWN" )
-        assert !tree1.find( "BLARGLEFARGLE" )
-        assert !tree1.find( "HOOTENANNY" )
-        assert !tree1.find( "COGITO ERGO SUM")
-
-        new File( "FourTreeSearchResults1.txt" ).withWriter { write ->
-            engBook.each { write.writeLine( "$it: " + ( tree1.find( it ) ?: "NOT FOUND" ) )
-            }
-        }
-        println "Results of search ATaleOfTwoCities -> EnglishDictionary written to file."
-
-        def ct1 = 0
-        def ct2 = 0
-        engBook.each {
-            if( tree1.find( it ) ) {
-                ++ct1
-            }
-            else {
-                ++ct2
-            }
-        }
-
-        println "Matches: $ct1"
-        println "Misses: $ct2"
-        println "Number of searches: " + engBook.size()
-
-        assert engBook.size() == ct1+ct2
-
-        def clos = { engBook.each { tree1.find(it) } }
-        EnglishDictionary.timeit( "\nTime to search for all words: ", 1, 3, 3, clos )
-
-        println "\n\n-------- TREE 3 --------"
-        println "Number of elements: ${tree3.elemCount()}"
-        println "Number of nodes: ${tree3.nodeCount()}"
-        println "Height of tree: ${tree3.height()}"
-
-        new File( "FourTreeSearchResults3.txt" ).withWriter { write ->
-            randQueries.each { write.writeLine( "$it: " + ( tree3.find( it ) ?: "NOT FOUND" ) )
-            }
-        }
-        println "Results of search RandomString -> RandomString written to file."
-
-        ct1 = 0
-        ct2 = 0
-        randQueries.each {
-            if( tree3.find( it ) ) {
-                ++ct1
-            }
-            else {
-                ++ct2
-            }
-        }
-
-        println "Matches: $ct1"
-        println "Misses: $ct2"
-        println "Number of searches: " + randQueries.size()
-
-        assert randQueries.size() == ct1+ct2
-
-        clos = { engBook.each { tree3.find(it) } }
-        EnglishDictionary.timeit( "\nTime to search for all words: ", 1, 3, 3, clos )
-
-    }
-
+    /*
+    * Constructor initializes empty tree
+    */
     public FourTree ( ) {
         root = null
+        ops = 0
     }
 
     /*
@@ -336,6 +256,7 @@ class FourTree<K,V> {
     */
     def find ( k ) {
 
+        ops = 0
         search( k, root )
 
     }
@@ -349,6 +270,8 @@ class FourTree<K,V> {
     * @return The Data object with key matching parameter k, or null if no match found
     */
     def private search ( k, rt ) {
+
+        ++ops
 
         if( !rt ) {
             return null
@@ -494,8 +417,107 @@ class FourTree<K,V> {
         Math.max( leftMax, rightMax ) + 1
     }
 
+    /*
+    * Empties tree
+    */
     def clearTree() {
         root = null
     }
+
+    /*
+    * Gets the number of traversals made in the most recent search
+    *
+    * @return ops Integer
+    */
+    def getOps() {
+        ops - 1
+    }
+
+
+    public static void main ( String [] args ) {
+
+        FourTree tree1 = new FourTree<String,String>()
+        FourTree tree2 = new FourTree<Comparable, String>()
+        FourTree tree3 = new FourTree<String,String>()
+
+        def engDict = EnglishDictionary.dictDataSet()
+        def engBook = EnglishDictionary.bookStringList()
+        def randData = RandomStringGen.generateDataSetFromSet( 20, true, true, true, 100000 )
+        def randQueries = RandomStringGen.generateStringList( 20, true, true, true, 100000 )
+
+        tree1.insert( engDict )
+        tree3.insert( randData )
+
+        println "-------- TREE 1 --------"
+        println "Number of elements: ${tree1.elemCount()}"
+        println "Number of nodes: ${tree1.nodeCount()}"
+        println "Height of tree: ${tree1.height()}"
+
+        assert tree1.find( "PHREATIC" )
+        assert tree1.find( "ILLECEBRATION" )
+        assert tree1.find( "KNOWN" )
+        assert !tree1.find( "BLARGLEFARGLE" )
+        assert !tree1.find( "HOOTENANNY" )
+        assert !tree1.find( "COGITO ERGO SUM")
+
+        new File( "FourTreeSearchResults1.txt" ).withWriter { write ->
+            engBook.each { write.writeLine( "$it: " + ( tree1.find( it ) ?: "NOT FOUND" ) )
+            }
+        }
+        println "Results of search ATaleOfTwoCities -> EnglishDictionary written to file."
+
+        def ct1 = 0
+        def ct2 = 0
+        engBook.each {
+            if( tree1.find( it ) ) {
+                ++ct1
+            }
+            else {
+                ++ct2
+            }
+        }
+
+        println "Matches: $ct1"
+        println "Misses: $ct2"
+        println "Number of searches: " + engBook.size()
+
+        assert engBook.size() == ct1+ct2
+
+        def clos = { engBook.each { tree1.find(it) } }
+        EnglishDictionary.timeit( "\nTime to search for all words: ", 1, 3, 3, clos )
+
+        println "\n\n-------- TREE 3 --------"
+        println "Number of elements: ${tree3.elemCount()}"
+        println "Number of nodes: ${tree3.nodeCount()}"
+        println "Height of tree: ${tree3.height()}"
+
+        new File( "FourTreeSearchResults3.txt" ).withWriter { write ->
+            randQueries.each { write.writeLine( "$it: " + ( tree3.find( it ) ?: "NOT FOUND" ) )
+            }
+        }
+        println "Results of search RandomString -> RandomString written to file."
+
+        ct1 = 0
+        ct2 = 0
+        randQueries.each {
+            if( tree3.find( it ) ) {
+                ++ct1
+            }
+            else {
+                ++ct2
+            }
+        }
+
+        println "Matches: $ct1"
+        println "Misses: $ct2"
+        println "Number of searches: " + randQueries.size()
+
+        assert randQueries.size() == ct1+ct2
+
+        clos = { engBook.each { tree3.find(it) } }
+        EnglishDictionary.timeit( "\nTime to search for all words: ", 1, 3, 3, clos )
+
+    }
+
 
 }

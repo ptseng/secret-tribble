@@ -5,9 +5,9 @@ class Main {
     def static engDict = EnglishDictionary.dictDataSet()
     def static engBook = EnglishDictionary.bookStringList()
     def static realCityCoordinates = WorldCities.importWorldCitiesAsDataSet()
-    def static randomCoordinates = WorldCities.generateRandomCoordinates( 1000 )
-    def static randMap = RandomStringGen.generateDataSetFromSet( 40, true, true, true, 100000 )
-    def static randList = RandomStringGen.generateStringList( 40, true, true, true, 100000 )
+    def static randomCoordinates = WorldCities.generateRandomCoordinates( 100000 )
+    def static randMap = RandomStringGen.generateDataSetFromSet( 20, true, true, true, 100000 )
+    def static randList = RandomStringGen.generateStringList( 20, true, true, true, 100000 )
 
     def static testFourTree( message ) {
 
@@ -32,24 +32,27 @@ class Main {
 
         tree.clearTree()
         tree.insert( data )
-        def rates = treeHitRate( tree, terms )
         def inputSize = terms.size()
-        def pass = 0;
-        def treeClosure = { terms.each { tree.find(it) } }
+        def rates = treeHitRate( tree, terms, inputSize )
         treePrintResults( "Results for ${name1} Tree with ${name2} Queries:", rates, inputSize )
-        4.times {
+
+        def pass = 0
+        def treeClosure = { terms.each { tree.find(it) } }
+        5.times {
             ++pass
             tree.clearTree()
             tree.insert( data )
-            DataGen.timeit( "\tTime for pass ${pass}", 1, 3, 1, treeClosure )
+            DataGen.timeit( "\tTime for pass ${pass}", 1, 5, 1, treeClosure )
         }
 
     }
 
-    def private static treeHitRate( tree, input ) {
+    def private static treeHitRate( tree, input, Integer inputSize ) {
 
         def ct1 = 0
         def ct2 = 0
+        def ops = 0
+        def opsCount = new ArrayList<Integer>( inputSize )
 
         input.each {
             if( tree.find( it ) ) {
@@ -58,17 +61,29 @@ class Main {
             else {
                 ++ct2
             }
+            ops = tree.getOps()
+            opsCount.add( ops )
         }
-        def counts = new Tuple( ct1, ct2 )
+        opsCount = opsCount.sort{ it.intValue() }
+        def max = opsCount.last()
+        def min = opsCount.first()
+        def sum = 0
+        opsCount.each{ sum = sum + it }
+        def avg = sum / opsCount.size()
+
+        def counts = new Tuple( ct1, ct2, min, max, avg )
 
         counts
     }
 
     def private static treePrintResults( message, rates, inputSize ) {
         println message
-        println "\tNumber of searches: " + inputSize
-        println "\tHits:   ${rates.get(0)}"
-        println "\tMisses: ${rates.get(1)}"
+        println "\tNumber of searches: ${inputSize}"
+        println "\tNumber of hits:     ${rates.get(0)}"
+        println "\tNumber of misses:   ${rates.get(1)}"
+        println "\tBest case ops:      ${rates.get(2)}"
+        println "\tAverage case ops:   ${rates.get(4) as Integer}"
+        println "\tWorst case ops:     ${rates.get(3)}"
     }
 
     public static void main( String [] args ) {
