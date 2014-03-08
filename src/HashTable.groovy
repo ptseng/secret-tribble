@@ -18,7 +18,7 @@ public class HashTable<K,V> extends DataGen
     /**
      * Default number of buckets
      */
-    private static int buckets = 5381
+    private int buckets = 5381
 
     /**
      * The number of collisions counted as keys are added
@@ -34,7 +34,7 @@ public class HashTable<K,V> extends DataGen
      * @see #hashCode()
      * @see #CryptoHash(java.lang.Object)
      */
-    private static int function = 1
+    private int function = 1
 
     /**
      * MessageDigest object used to create a Md5 hashing object
@@ -101,18 +101,6 @@ public class HashTable<K,V> extends DataGen
         }
         else
         {
-            def iter = hashtable[index].iterator()
-
-            while(iter.hasNext())
-            {
-                //The key already exists in the table
-                /**
-                 * TODO Return something meaningful when entering duplicate key
-                 */
-                  if(key.compareTo(iter.next().key) == 0)
-                    return
-            }
-
             collisions += 1
         }
 
@@ -139,7 +127,6 @@ public class HashTable<K,V> extends DataGen
 
             while(iter.hasNext())
             {
-                //if(iter.next().matchKey(key))
                 if(key.compareTo(iter.next().key) == 0)
                     return true
             }
@@ -165,7 +152,7 @@ public class HashTable<K,V> extends DataGen
 
         def l = hashtable[index];
 
-        if(l != null) // && l.head().value.equals(value))
+        if(l != null)
         {
             def iter = l.iterator()
 
@@ -173,7 +160,6 @@ public class HashTable<K,V> extends DataGen
             {
                 ++traversal
 
-                //if(iter.next().matchKey(key))
                 if(key.compareTo(iter.next().key) == 0)
                     return traversal
             }
@@ -193,7 +179,7 @@ public class HashTable<K,V> extends DataGen
 
         for(LinkedList<Data> l : hashtable)
         {
-            if(l != null )  //&& l.head().value.equals(value))
+            if(l != null )
             {
                 def iter = l.iterator()
 
@@ -328,6 +314,22 @@ public class HashTable<K,V> extends DataGen
     }
 
 
+    public void Clear()
+    {
+        for(LinkedList<Data> l : hashtable )
+        {
+            if( l != null && !l.empty)
+            {
+                l.clear()
+            }
+
+            l = null
+        }
+
+        size = 0
+        collisions = 0
+    }
+
 
 
     /**
@@ -341,7 +343,7 @@ public class HashTable<K,V> extends DataGen
         def dictionary = EnglishDictionary.import1913EnglishDictionary() as HashMap<String, String>
 
 
-        def ht = new HashTable<String, String>(2)
+        def ht = new HashTable<String, String>(2, dictionary.size()*2)
 
 
 
@@ -380,7 +382,7 @@ public class HashTable<K,V> extends DataGen
 
 
 
-
+      /*
         println("Traversals required for 'AITCH': " + ht.CountTraversalsKey("AITCH") + "\n")
 
        assert dictionary.size() != 0
@@ -407,7 +409,7 @@ public class HashTable<K,V> extends DataGen
         }
 
 
-        /*
+
             Code below compares searches for words in A Tale of Two Cities
             dictionary (modeled as a HashMap) is assumed to be correct
             someone smarter than me wrote it.
@@ -438,7 +440,47 @@ public class HashTable<K,V> extends DataGen
         println "Matches: $found"
         println "Misses: $missed"
 
+        def pass = 0
+        def cl = { taleoftwocities.each { ht.ContainsKey( it ) } }
 
+            ++pass
+            //ht.Clear()
+            //dictionary.each { ht.Insert ( it.key, it.value ) }
+            assert ht.Size() == dictionary.size()
+            println("Size of hashtable: " + ht.Size())
+            //DataGen.timeit( "\tTime for pass ${pass}", 1, 5, 1, { taleoftwocities.each { ht.ContainsKey( it ) } } )
+        //timeit.call("\tTime for pass ${pass}", 1, 5, 1,
+             //   {
+             //   taleoftwocities.each
+                  //      {
+
+                     //       if (ht.ContainsKey(it)) {
+                     //           found++
+                     //       } else missed++
+                     //   } }
+
+        //)
+
+
+
+
+        //static def timeit = {
+            //String message, int numThreads=1, int count=1, int warmup=3, Closure cl->
+                1.times { cl() }
+                def startTime = System.currentTimeMillis()
+                5.times { cl()
+
+                }
+                def deltaTime = System.currentTimeMillis() - startTime
+                def average = deltaTime / 5
+                println "Time for pass 1:\tcount: 5 \ttime: $deltaTime \taverage: $average"
+
+
+
+
+
+        println()
+        println()
         def foundD = 0
         def missedD = 0
 
@@ -459,6 +501,8 @@ public class HashTable<K,V> extends DataGen
         assert found == foundD
         assert missed == missedD
 
+
+        /*
         def traversals = ht.CountTraversalsKey("AITCH")
         println "Traversals for 'AITCH': $traversals"
 
@@ -547,7 +591,7 @@ public class HashTable<K,V> extends DataGen
         println "\nTraversals to find testcity: " + citiesTest.CountTraversalsKey(testcity)
         println "\nTraversals to find longyearbyennew: " + citiesTest.CountTraversalsKey(longyearbyennew)
         println "\nTraversals to find portland: " + citiesTest.CountTraversalsKey(portland)
-
+          */
     }
 
 }
