@@ -19,7 +19,27 @@ class WorldCities extends DataGen {
         }
 
         public int compareTo(Coordinates<K,J> that) {
+/*
+            if( lat == (that.lat as Integer) && lon == (that.lon as Integer) ) {
+                return 0
+            }
+            else if( lat < (that.lat as Integer) ) {
+                return -1
+            }
+            else {
+                return 1
+            }
 
+            if( isNear( that.getLat(), that.getLon(), 10 ) ) {
+                return 0
+            }
+            else if( this.lat.compareTo( that.lat ) < 0 ) {
+                return -1
+            }
+            else {
+                return 1
+            }
+*/
             int cmp = this.lat.compareTo(that.lat);
 
             if (cmp == 0)
@@ -28,8 +48,8 @@ class WorldCities extends DataGen {
             }
 
             return cmp;
-        }
 
+        }
 
         @Override
         public int hashCode()
@@ -89,7 +109,9 @@ class WorldCities extends DataGen {
 
         def dataSet = new HashSet<Data<Coordinates,String>>()
         def cityMap = importWorldCities()
-        cityMap.each { key, value -> def data = new Data<Coordinates,String>(key, value); dataSet.add( data ) }
+        cityMap.each { key, value ->
+            //key = new Coordinates(lat:key.getLat() as Integer, lon:key.getLon() as Integer)
+            def data = new Data<Coordinates,String>(key, value); dataSet.add( data ) }
 
         dataSet
 
@@ -113,7 +135,7 @@ class WorldCities extends DataGen {
             def lonLeft = floatGen.nextInt() % 180
             def lonRight = floatGen.nextFloat()
             def lon = lonLeft.toFloat() + lonRight
-            def coord = new Coordinates( lon:lon.round(3), lat:lat.round(3) )
+            def coord = new Coordinates( lon:lon as Integer, lat:lat as Integer )
             coordinateList.add( coord )
         }
 

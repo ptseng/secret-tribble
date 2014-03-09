@@ -8,7 +8,7 @@ import java.security.*
 public class HashTable<K,V> extends DataGen
 {
 
-    private LinkedList<Data<K,V>> [] hashtable
+    private Object [] hashtable
 
     /**
      * Number of unique values held in the hashtable

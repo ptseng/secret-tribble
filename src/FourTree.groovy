@@ -442,8 +442,10 @@ class FourTree<K,V> {
 
         def engDict = EnglishDictionary.dictDataSet()
         def engBook = EnglishDictionary.bookStringList()
-        def randData = RandomStringGen.generateDataSetFromSet( 20, true, true, true, 100000 )
-        def randQueries = RandomStringGen.generateStringList( 20, true, true, true, 100000 )
+        def randData = RandomStringGen.generateDataSetFromSet( 8, true, false, true, 100000 )
+        def randQueries = RandomStringGen.generateStringList( 8, true, false, true, 100000 )
+        def realCityCoordinates = WorldCities.importWorldCitiesAsDataSet()
+        def randomCoordinates = WorldCities.generateRandomCoordinates( 100000 )
 
         tree1.insert( engDict )
         tree3.insert( randData )
@@ -516,6 +518,16 @@ class FourTree<K,V> {
 
         clos = { engBook.each { tree3.find(it) } }
         EnglishDictionary.timeit( "\nTime to search for all words: ", 1, 3, 3, clos )
+
+        new File( "FourTree2Contents.txt" ).withWriter { write ->
+            realCityCoordinates.each { write.writeLine( "${it.getKey().getLat()}, ${it.getKey().getLon()}" )
+            }
+        }
+        tree2.insert( realCityCoordinates )
+        new File( "FourTreeSearchResults2.txt" ).withWriter { write ->
+            randomCoordinates.each { write.writeLine( "${it.getLat()}, ${it.getLon()}: " + ( tree2.find( it ) ?: "NOT FOUND" ) )
+            }
+        }
 
     }
 

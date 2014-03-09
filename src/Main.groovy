@@ -6,8 +6,8 @@ class Main {
     def static engBook = EnglishDictionary.bookStringList()
     def static realCityCoordinates = WorldCities.importWorldCitiesAsDataSet()
     def static randomCoordinates = WorldCities.generateRandomCoordinates( 100000 )
-    def static randMap = RandomStringGen.generateDataSetFromSet( 20, true, true, true, 100000 )
-    def static randList = RandomStringGen.generateStringList( 20, true, true, true, 100000 )
+    def static randMap = RandomStringGen.generateDataSetFromSet( 8, true, false, true, 100000 )
+    def static randList = RandomStringGen.generateStringList( 8, true, false, true, 100000 )
 
     def static testFourTree( message ) {
 
@@ -16,15 +16,15 @@ class Main {
         def tree3 = new FourTree<String,String>()
 
         println message
-        fourTreeSuite( tree1, engDict, engBook, "Dictionary", "Book" )
+        //fourTreeSuite( tree1, engDict, engBook, "Dictionary", "Book" )
         println()
-        fourTreeSuite( tree1, engDict, randList, "Dictionary", "Random" )
+        //fourTreeSuite( tree1, engDict, randList, "Dictionary", "Random" )
         println()
         fourTreeSuite( tree2, realCityCoordinates, randomCoordinates, "GPS", "Random" )
         println()
-        fourTreeSuite( tree3, randMap, engBook, "Random", "Book" )
+        //fourTreeSuite( tree3, randMap, engBook, "Random", "Book" )
         println()
-        fourTreeSuite( tree3, randMap, randList, "Random", "Random" )
+        //fourTreeSuite( tree3, randMap, randList, "Random", "Random" )
         println()
     }
 
@@ -207,9 +207,8 @@ class Main {
 
         testFourTree( "-------- 2-3-4 TREE TESTING --------" )
         println()
-
-        TestHashTable("-------- HASH TABLE TESTING --------")
-
+        //TestHashTable("-------- HASH TABLE TESTING --------")
+        println()
 
     }
 
