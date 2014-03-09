@@ -1,4 +1,3 @@
-//import org.apache.commons.lang.*;
 import org.apache.commons.lang3.*;
 
 class RandomStringGen {
