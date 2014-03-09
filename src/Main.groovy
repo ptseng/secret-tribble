@@ -16,15 +16,15 @@ class Main {
         def tree3 = new FourTree<String,String>()
 
         println message
-        //fourTreeSuite( tree1, engDict, engBook, "Dictionary", "Book" )
+        fourTreeSuite( tree1, engDict, engBook, "Dictionary", "Book" )
         println()
-        //fourTreeSuite( tree1, engDict, randList, "Dictionary", "Random" )
+        fourTreeSuite( tree1, engDict, randList, "Dictionary", "Random" )
         println()
         fourTreeSuite( tree2, realCityCoordinates, randomCoordinates, "GPS", "Random" )
         println()
-        //fourTreeSuite( tree3, randMap, engBook, "Random", "Book" )
+        fourTreeSuite( tree3, randMap, engBook, "Random", "Book" )
         println()
-        //fourTreeSuite( tree3, randMap, randList, "Random", "Random" )
+        fourTreeSuite( tree3, randMap, randList, "Random", "Random" )
         println()
     }
 
