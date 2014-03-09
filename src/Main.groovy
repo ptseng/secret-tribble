@@ -19,26 +19,39 @@ class Main {
         def tree2 = new SimpleBinaryTree<WorldCities.Coordinates,String>()
         def tree3 = new SimpleBinaryTree<String,String>()
 
+        def smallSortedEngDict = new ArrayList(1000)
+        for( i in 0..999 ) {
+            smallSortedEngDict.add(sortedEngDict.get(i) )
+        }
+        def smallSortedRealCityCoordinates = new ArrayList(1000)
+        for( i in 0..999 ) {
+            smallSortedRealCityCoordinates.add(sortedRealCityCoordinates.get(i) )
+        }
+        def smallSortedRandMap = new ArrayList(1000)
+        for( i in 0..999 ) {
+            smallSortedRandMap.add(sortedRandMap.get(i) )
+        }
+
         println message
         BSTTreeSuite( tree1, engDict, engBook, "Unsorted Dictionary", "Book" )
         println()
-        BSTTreeSuite( tree1, sortedEngDict, engBook, "Sorted Dictionary", "Book" )
+        BSTTreeSuite( tree1, smallSortedEngDict, engBook, "Small Sorted Dictionary", "Book" )
         println()
         BSTTreeSuite( tree1, engDict, randList, "Unsorted Dictionary", "Random" )
         println()
-        BSTTreeSuite( tree1, sortedEngDict, randList, "Sorted Dictionary", "Random" )
+        BSTTreeSuite( tree1, smallSortedEngDict, randList, "Small Sorted Dictionary", "Random" )
         println()
         BSTTreeSuite( tree2, realCityCoordinates, randomCoordinates, "Unsorted GPS", "Random" )
         println()
-        BSTTreeSuite( tree2, sortedRealCityCoordinates, randomCoordinates, "Sorted GPS", "Random" )
+        BSTTreeSuite( tree2, smallSortedRealCityCoordinates, randomCoordinates, "Small Sorted GPS", "Random" )
         println()
         BSTTreeSuite( tree3, randMap, engBook, "Unsorted Random", "Book" )
         println()
-        BSTTreeSuite( tree1, sortedRandMap, engBook, "Sorted Random", "Book" )
+        BSTTreeSuite( tree1, smallSortedRandMap, engBook, "Small Sorted Random", "Book" )
         println()
         BSTTreeSuite( tree3, randMap, randList, "Unsorted Random", "Random" )
         println()
-        BSTTreeSuite( tree1, sortedRandMap, randList, "Sorted Random", "Random" )
+        BSTTreeSuite( tree1, smallSortedRandMap, randList, "Small Sorted Random", "Random" )
         println()
 
     }
