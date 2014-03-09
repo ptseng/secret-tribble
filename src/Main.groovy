@@ -23,10 +23,6 @@ class Main {
         for( i in 0..999 ) {
             smallSortedEngDict.add(sortedEngDict.get(i) )
         }
-        def smallSortedRealCityCoordinates = new ArrayList(1000)
-        for( i in 0..999 ) {
-            smallSortedRealCityCoordinates.add(sortedRealCityCoordinates.get(i) )
-        }
         def smallSortedRandMap = new ArrayList(1000)
         for( i in 0..999 ) {
             smallSortedRandMap.add(sortedRandMap.get(i) )
@@ -43,7 +39,7 @@ class Main {
         println()
         BSTTreeSuite( tree2, realCityCoordinates, randomCoordinates, "Unsorted GPS", "Random" )
         println()
-        BSTTreeSuite( tree2, smallSortedRealCityCoordinates, randomCoordinates, "Small Sorted GPS", "Random" )
+        BSTTreeSuite( tree2, sortedRealCityCoordinates, randomCoordinates, "Sorted GPS", "Random" )
         println()
         BSTTreeSuite( tree3, randMap, engBook, "Unsorted Random", "Book" )
         println()
