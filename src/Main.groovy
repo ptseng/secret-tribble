@@ -9,6 +9,78 @@ class Main {
     def static randMap = RandomStringGen.generateDataSetFromSet( 8, true, false, true, 100000 )
     def static randList = RandomStringGen.generateStringList( 8, true, false, true, 100000 )
 
+
+    // SimpleBinaryTree Testing
+    def static testSimpleBinaryTree( message ) {
+
+        def tree1 = new SimpleBinaryTree<String,String>()
+        def tree2 = new SimpleBinaryTree<WorldCities.Coordinates,String>()
+        def tree3 = new SimpleBinaryTree<String,String>()
+
+        println message
+        BSTTreeSuite( tree1, engDict, engBook, "Dictionary", "Book" )
+        println()
+        BSTTreeSuite( tree1, engDict, randList, "Dictionary", "Random" )
+        println()
+        BSTTreeSuite( tree2, realCityCoordinates, randomCoordinates, "GPS", "Random" )
+        println()
+        BSTTreeSuite( tree3, randMap, engBook, "Random", "Book" )
+        println()
+        BSTTreeSuite( tree3, randMap, randList, "Random", "Random" )
+        println()
+    }
+
+    def private static BSTTreeSuite( tree, data, terms, name1, name2 ) {
+
+        tree.clearTree()
+
+        data.each{ tree.insert(it.key, it.value)}
+
+        def inputSize = terms.size()
+        def rates = BSTtreeHitRate( tree, terms, inputSize )
+        treePrintResults( "Results for ${name1} Tree with ${name2} Queries:", rates, inputSize )
+
+        def pass = 0
+        def treeClosure = { terms.each { tree.lookup(it) } }
+        5.times {
+            ++pass
+            tree.clearTree()
+            data.each{ tree.insert(it.key, it.value)}
+            DataGen.timeit( "\tTime for pass ${pass}", 1, 5, 3, treeClosure )
+        }
+
+    }
+
+    def private static BSTtreeHitRate( tree, input, Integer inputSize ) {
+
+        def ct1 = 0
+        def ct2 = 0
+        def ops = 0
+        def opsCount = new ArrayList<Integer>( inputSize )
+
+        input.each {
+            if( tree.lookup( it ) ) {
+                ++ct1
+            }
+            else {
+                ++ct2
+            }
+            ops = tree.getTraversals( it )
+            opsCount.add( ops )
+        }
+        opsCount = opsCount.sort{ it.intValue() }
+        def max = opsCount.last()
+        def min = opsCount.first()
+        def sum = 0
+        opsCount.each{ sum = sum + it }
+        def avg = sum / opsCount.size()
+
+        def counts = new Tuple( ct1, ct2, min, max, avg )
+
+        counts
+    }
+
+    // FourTree Testing
     def static testFourTree( message ) {
 
         def tree1 = new FourTree<String,String>()
@@ -16,15 +88,15 @@ class Main {
         def tree3 = new FourTree<String,String>()
 
         println message
-        //fourTreeSuite( tree1, engDict, engBook, "Dictionary", "Book" )
+        fourTreeSuite( tree1, engDict, engBook, "Dictionary", "Book" )
         println()
-        //fourTreeSuite( tree1, engDict, randList, "Dictionary", "Random" )
+        fourTreeSuite( tree1, engDict, randList, "Dictionary", "Random" )
         println()
         fourTreeSuite( tree2, realCityCoordinates, randomCoordinates, "GPS", "Random" )
         println()
-        //fourTreeSuite( tree3, randMap, engBook, "Random", "Book" )
+        fourTreeSuite( tree3, randMap, engBook, "Random", "Book" )
         println()
-        //fourTreeSuite( tree3, randMap, randList, "Random", "Random" )
+        fourTreeSuite( tree3, randMap, randList, "Random", "Random" )
         println()
     }
 
@@ -86,6 +158,7 @@ class Main {
         println "\tWorst case ops:     ${rates.get(3)}"
     }
 
+    // Hash Testing
     def static TestHashTable( message )
     {
         def htdicthashcode = new HashTable<String, String>( 1, engDict.size()*2 )
@@ -196,6 +269,8 @@ class Main {
 
     public static void main( String [] args ) {
 
+        testSimpleBinaryTree("-------- BST  TREE TESTING --------")
+        println()
         testFourTree( "-------- 2-3-4 TREE TESTING --------" )
         println()
         TestHashTable("-------- HASH TABLE TESTING --------")

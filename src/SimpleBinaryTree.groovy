@@ -4,6 +4,11 @@ public class SimpleBinaryTree<K extends Comparable<K>, V>
 
     public SimpleBinaryTree()   { root = null }
 
+    //Clear
+    public void clearTree() {
+        root = null
+    }
+
     //SIZE
     public int size() {
         return(sub_size(root))
