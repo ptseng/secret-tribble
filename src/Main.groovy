@@ -38,11 +38,11 @@ class Main {
 
         def pass = 0
         def treeClosure = { terms.each { tree.find(it) } }
-        2.times {
+        5.times {
             ++pass
             tree.clearTree()
             tree.insert( data )
-            DataGen.timeit( "\tTime for pass ${pass}", 1, 2, 1, treeClosure )
+            DataGen.timeit( "\tTime for pass ${pass}", 1, 5, 1, treeClosure )
         }
 
     }
@@ -94,22 +94,26 @@ class Main {
     {
         def htdicthashcode = new HashTable<String, String>( 1, engDict.size()*2 )
         def htdictcrypt = new HashTable<String, String>( 2, engDict.size()*2 )
+        def htcityhashcode = new HashTable<WorldCities.Coordinates, String>( 1, realCityCoordinates.size()*2 )
+        def htcitycrypt = new HashTable<WorldCities.Coordinates, String>( 2, realCityCoordinates.size()*2 )
+        def htrandhashcode = new HashTable<String, String>( 1, randMap.size()*2 )
+        def htrandcrypt = new HashTable<String, String>( 2, randMap.size()*2 )
 
         println message
+
         HashTableTestSuite( htdicthashcode, htdictcrypt, engDict, engBook, "Dictionary", "Book" )
         println()
+
         HashTableTestSuite( htdicthashcode, htdictcrypt, engDict, randList, "Dictionary", "Random" )
         println()
 
-        def htcityhashcode = new HashTable<WorldCities.Coordinates, String>( 1, realCityCoordinates.size()*2 )
-        def htcitycrypt = new HashTable<WorldCities.Coordinates, String>( 2, realCityCoordinates.size()*2 )
         HashTableTestSuite( htcityhashcode, htcitycrypt, realCityCoordinates, randomCoordinates, "GPS", "Random" )
         println()
 
-        def htrandhashcode = new HashTable<String, String>( 1, randMap.size()*2 )
-        def htrandcrypt = new HashTable<String, String>( 2, randMap.size()*2 )
         HashTableTestSuite( htrandhashcode, htrandcrypt, randMap, engBook, "Random", "Book" )
         println()
+
+        HashTableTestSuite( htrandhashcode, htrandcrypt, randMap, randList, "Random", "Random" )
     }
 
 
@@ -124,15 +128,16 @@ class Main {
         def inputSize = terms.size()
         def rates = HashHitRate( tablehashcode, terms, inputSize )
         treePrintResults( "Results for ${name1} HashTable using .hashcode() with ${name2} Queries: ", rates, inputSize )
+        println"\tCollisions:    ${ tablehashcode.NumberOfCollisions() }"
 
 
         def pass = 0
         def hashClosure = { terms.each { tablehashcode.ContainsKey( it ) } }
-        2.times {
+        5.times {
             ++pass
             tablehashcode.Clear()
             data.each { tablehashcode.Insert( it.key, it.value ) }
-            DataGen.timeit( "\tTime for pass ${pass}", 1, 2, 1, hashClosure )
+            DataGen.timeit( "\tTime for pass ${pass}", 1, 5, 1, hashClosure )
         }
         tablehashcode.Clear()
 
@@ -142,14 +147,15 @@ class Main {
         inputSize = terms.size()
         rates = HashHitRate( tablecrypt, terms, inputSize )
         treePrintResults( "Results for ${name1} HashTable using cryptographic hash with ${name2} Queries: ", rates, inputSize )
+        println"\tCollisions:    ${ tablecrypt.NumberOfCollisions() }"
 
         pass = 0
         hashClosure = { terms.each { tablecrypt.ContainsKey( it ) } }
-        2.times {
+        5.times {
             ++pass
             tablecrypt.Clear()
             data.each { tablecrypt.Insert( it.key, it.value ) }
-            DataGen.timeit( "\tTime for pass ${pass}", 1, 2, 1, hashClosure )
+            DataGen.timeit( "\tTime for pass ${pass}", 1, 5, 1, hashClosure )
         }
 
         tablecrypt.Clear()
@@ -209,6 +215,7 @@ class Main {
         println()
 
         TestHashTable("-------- HASH TABLE TESTING --------")
+        println()
 
 
     }
