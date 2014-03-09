@@ -8,7 +8,7 @@ import java.security.*
 public class HashTable<K,V> extends DataGen
 {
 
-    private LinkedList<Data<K,V>> [] hashtable
+    private Object [] hashtable
 
     /**
      * Number of unique values held in the hashtable
@@ -18,7 +18,7 @@ public class HashTable<K,V> extends DataGen
     /**
      * Default number of buckets
      */
-    private static int buckets = 5381
+    private int buckets = 5381
 
     /**
      * The number of collisions counted as keys are added
@@ -34,7 +34,7 @@ public class HashTable<K,V> extends DataGen
      * @see #hashCode()
      * @see #CryptoHash(java.lang.Object)
      */
-    private static int function = 1
+    private int function = 1
 
     /**
      * MessageDigest object used to create a Md5 hashing object
@@ -101,18 +101,6 @@ public class HashTable<K,V> extends DataGen
         }
         else
         {
-            def iter = hashtable[index].iterator()
-
-            while(iter.hasNext())
-            {
-                //The key already exists in the table
-                /**
-                 * TODO Return something meaningful when entering duplicate key
-                 */
-                  if(key.compareTo(iter.next().key) == 0)
-                    return
-            }
-
             collisions += 1
         }
 
@@ -139,7 +127,6 @@ public class HashTable<K,V> extends DataGen
 
             while(iter.hasNext())
             {
-                //if(iter.next().matchKey(key))
                 if(key.compareTo(iter.next().key) == 0)
                     return true
             }
@@ -165,7 +152,7 @@ public class HashTable<K,V> extends DataGen
 
         def l = hashtable[index];
 
-        if(l != null) // && l.head().value.equals(value))
+        if(l != null)
         {
             def iter = l.iterator()
 
@@ -173,7 +160,6 @@ public class HashTable<K,V> extends DataGen
             {
                 ++traversal
 
-                //if(iter.next().matchKey(key))
                 if(key.compareTo(iter.next().key) == 0)
                     return traversal
             }
@@ -193,7 +179,7 @@ public class HashTable<K,V> extends DataGen
 
         for(LinkedList<Data> l : hashtable)
         {
-            if(l != null )  //&& l.head().value.equals(value))
+            if(l != null )
             {
                 def iter = l.iterator()
 
@@ -328,6 +314,22 @@ public class HashTable<K,V> extends DataGen
     }
 
 
+    public void Clear()
+    {
+        for(LinkedList<Data> l : hashtable )
+        {
+            if( l != null && !l.empty)
+            {
+                l.clear()
+            }
+
+            l = null
+        }
+
+        size = 0
+        collisions = 0
+    }
+
 
 
     /**
@@ -337,217 +339,6 @@ public class HashTable<K,V> extends DataGen
      */
     public static void main(String[] args)
     {
-
-        def dictionary = EnglishDictionary.import1913EnglishDictionary() as HashMap<String, String>
-
-
-        def ht = new HashTable<String, String>(2)
-
-
-
-        assert ht.Size() == 0
-        assert !ht.ContainsKey("A")
-        assert !ht.ContainsValue("A")
-        assert ht.NumberOfCollisions() == 0
-        assert ht.IsEmpty()
-
-
-        for(Object k : dictionary.keySet())
-        {
-            ht.Insert(k,dictionary.get(k))
-        }
-
-        assert ht.Size() == dictionary.size()
-
-
-
-
-
-        println("Size: " + ht.Size())
-        println("Collisions: " + ht.NumberOfCollisions())
-
-        timeit ("Timing test")
-        {
-            assert ht.ContainsKey("AITCH")
-            assert ht.ContainsKey("COMPUTER")
-            assert ht.ContainsKey("FARCE")
-            assert ht.ContainsKey("ZEBRA")
-            assert !ht.ContainsKey("TWERKING")      // Twerking did not exist in 1913
-
-            //assert ht.get("VAMPIRE") == "Either one of two or more species of South American blood-sucking bats belonging to the genera Desmodus and Diphylla. Thesebats are destitute of molar teeth, but have strong, sharp cuttingincisors with which they make punctured wounds from which they suckthe blood of horses, cattle, and other animals, as well as man,chiefly during sleep. They have a cæcal appendage to the stomach, inwhich the blood with which they gorge themselves is stored."
-        }
-
-
-
-
-
-        println("Traversals required for 'AITCH': " + ht.CountTraversalsKey("AITCH") + "\n")
-
-       assert dictionary.size() != 0
-       timeit ("Some data to compare against")
-       {
-            assert dictionary.containsKey("AITCH")
-            assert dictionary.containsKey("COMPUTER")
-            assert dictionary.containsKey("FARCE")
-            assert dictionary.containsKey("ZEBRA")
-            assert !dictionary.containsKey("TWERKING")
-            //assert dictionary.get("VAMPIRE") == "Either one of two or more species of South American blood-sucking bats belonging to the genera Desmodus and Diphylla. Thesebats are destitute of molar teeth, but have strong, sharp cuttingincisors with which they make punctured wounds from which they suckthe blood of horses, cattle, and other animals, as well as man,chiefly during sleep. They have a cæcal appendage to the stomach, inwhich the blood with which they gorge themselves is stored."
-       }
-
-
-        timeit("\nTiming value search (hashtable): ", 5, 5, 5)
-        {
-            assert ht.ContainsValue("Either one of two or more species of South American blood-sucking bats belonging to the genera Desmodus and Diphylla. Thesebats are destitute of molar teeth, but have strong, sharp cuttingincisors with which they make punctured wounds from which they suckthe blood of horses, cattle, and other animals, as well as man,chiefly during sleep. They have a cæcal appendage to the stomach, inwhich the blood with which they gorge themselves is stored.") != -1;
-        }
-
-
-        timeit("\nTiming value search (dictionary): ", 5, 5, 5)
-        {
-            assert dictionary.containsValue("Either one of two or more species of South American blood-sucking bats belonging to the genera Desmodus and Diphylla. Thesebats are destitute of molar teeth, but have strong, sharp cuttingincisors with which they make punctured wounds from which they suckthe blood of horses, cattle, and other animals, as well as man,chiefly during sleep. They have a cæcal appendage to the stomach, inwhich the blood with which they gorge themselves is stored.")
-        }
-
-
-        /*
-            Code below compares searches for words in A Tale of Two Cities
-            dictionary (modeled as a HashMap) is assumed to be correct
-            someone smarter than me wrote it.
-            HashTable is my method that I am testing against to verify correct
-            values have been found.
-         */
-
-
-        def taleoftwocities = EnglishDictionary.importATaleOfTwoCities() as ArrayList<String>
-        def found = 0
-        def missed = 0
-
-
-        //timeit("\nTime to search for words from A Tale of Two Cities(HashTable): ")
-        //{
-            taleoftwocities.each
-            {
-
-                if(ht.ContainsKey(it))
-                {
-                    found++
-                }
-                else missed++
-            }
-
-        //}
-
-        println "Matches: $found"
-        println "Misses: $missed"
-
-
-        def foundD = 0
-        def missedD = 0
-
-        taleoftwocities.each
-        {
-            if(dictionary.containsKey(it))
-            {
-                foundD++
-            }
-            else missedD++
-        }
-
-
-        println "Matches: $foundD"
-        println "Misses: $missedD"
-
-        assert foundD + missedD == taleoftwocities.size();
-        assert found == foundD
-        assert missed == missedD
-
-        def traversals = ht.CountTraversalsKey("AITCH")
-        println "Traversals for 'AITCH': $traversals"
-
-        traversals = ht.CountTraversalsKey("TWERK")
-        println "\nTraversals for 'TWERK': $traversals"
-
-        traversals = ht.CountTraversalsValue("Probably not in the dictionary")
-        println "\nTraversals for value not in the dictionary: $traversals"
-
-
-        def min = 0
-        def max = 0
-        taleoftwocities.each
-        {
-            def t = ht.CountTraversalsKey(it)
-
-            if(t > max)
-            {
-                max = t
-            }
-            else
-            {
-                if(t < min)
-                {
-                    min = t
-                }
-            }
-        }
-
-        println "Most traversals when key found: $max"
-        println "Most traversals when key not found: $min"
-
-
-
-        def test = new HashTable(1,1)
-
-        assert test.CountTraversalsKey("A") == 0
-        assert test.CountTraversalsValue("TRUCK") == 0
-
-        test.Insert("A","Phil")
-        test.Insert("C","Shawn")
-        test.Insert("B","Matt")
-
-        assert test.CountTraversalsKey("A") == 3
-        assert test.CountTraversalsKey("C") == 2
-        assert test.CountTraversalsKey("B") == 1
-        assert test.CountTraversalsKey("PH") == -3
-
-
-        assert test.CountTraversalsValue("Phil") == 3
-        assert test.CountTraversalsValue("Shawn") == 2
-        assert test.CountTraversalsValue("Matt") == 1
-        assert test.CountTraversalsValue("Truck") == -3
-
-
-
-
-
-        def cities =  WorldCities.importWorldCities() as HashMap<WorldCities.Coordinates, String>
-        def citiesTest = new HashTable<WorldCities.Coordinates, String>(3, 131)
-
-        cities.each{ citiesTest.Insert(it.key, it.value); if(it.value == "Portland") println it.key.hashCode(); }
-
-        assert citiesTest.Size() == cities.size()
-        assert citiesTest.Size() == 661
-        assert citiesTest.ContainsValue("Portland")
-        assert citiesTest.ContainsValue("London")
-        assert citiesTest.ContainsValue("Beijing")
-
-        def portland = new WorldCities.Coordinates(lat:45.517F, lon:-122.667F)
-        def testcity = new WorldCities.Coordinates(lat: 45.517F, lon:-133.123F)
-        def longyearbyennew = new WorldCities.Coordinates(lat: 78.217F, lon:15.55F)
-
-        citiesTest.Insert(testcity, "TestCity")
-
-
-        timeit("Testing Lookup in Cities Hashtable")
-        {
-            assert citiesTest.ContainsKey(testcity)
-            assert citiesTest.ContainsKey(longyearbyennew)
-            assert citiesTest.ContainsKey(portland)
-
-        }
-
-
-        println "\nTraversals to find testcity: " + citiesTest.CountTraversalsKey(testcity)
-        println "\nTraversals to find longyearbyennew: " + citiesTest.CountTraversalsKey(longyearbyennew)
-        println "\nTraversals to find portland: " + citiesTest.CountTraversalsKey(portland)
-
     }
 
 }
