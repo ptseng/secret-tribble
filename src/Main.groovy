@@ -42,7 +42,7 @@ class Main {
             ++pass
             tree.clearTree()
             tree.insert( data )
-            DataGen.timeit( "\tTime for pass ${pass}", 1, 5, 1, treeClosure )
+            DataGen.timeit( "\tTime for pass ${pass}", 1, 5, 3, treeClosure )
         }
 
     }
@@ -86,10 +86,6 @@ class Main {
         println "\tWorst case ops:     ${rates.get(3)}"
     }
 
-
-
-
-
     def static TestHashTable( message )
     {
         def htdicthashcode = new HashTable<String, String>( 1, engDict.size()*2 )
@@ -116,10 +112,6 @@ class Main {
         HashTableTestSuite( htrandhashcode, htrandcrypt, randMap, randList, "Random", "Random" )
     }
 
-
-
-
-
     def private static HashTableTestSuite( HashTable tablehashcode, HashTable tablecrypt, data, terms, name1, name2 )
     {
         data.each { tablehashcode.Insert( it.key, it.value ) }
@@ -137,7 +129,7 @@ class Main {
             ++pass
             tablehashcode.Clear()
             data.each { tablehashcode.Insert( it.key, it.value ) }
-            DataGen.timeit( "\tTime for pass ${pass}", 1, 5, 1, hashClosure )
+            DataGen.timeit( "\tTime for pass ${pass}", 1, 5, 3, hashClosure )
         }
         tablehashcode.Clear()
 
@@ -155,15 +147,12 @@ class Main {
             ++pass
             tablecrypt.Clear()
             data.each { tablecrypt.Insert( it.key, it.value ) }
-            DataGen.timeit( "\tTime for pass ${pass}", 1, 5, 1, hashClosure )
+            DataGen.timeit( "\tTime for pass ${pass}", 1, 5, 3, hashClosure )
         }
 
         tablecrypt.Clear()
 
     }
-
-
-
 
     def private static HashHitRate( table, input, Integer inputSize )
     {
@@ -205,18 +194,12 @@ class Main {
         counts
     }
 
-
-
-
-
     public static void main( String [] args ) {
 
         testFourTree( "-------- 2-3-4 TREE TESTING --------" )
         println()
-
         TestHashTable("-------- HASH TABLE TESTING --------")
         println()
-
 
     }
 
