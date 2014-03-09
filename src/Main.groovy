@@ -6,8 +6,8 @@ class Main {
     def static engBook = EnglishDictionary.bookStringList()
     def static realCityCoordinates = WorldCities.importWorldCitiesAsDataSet()
     def static randomCoordinates = WorldCities.generateRandomCoordinates( 100000 )
-    def static randMap = RandomStringGen.generateDataSetFromSet( 20, true, true, true, 100000 )
-    def static randList = RandomStringGen.generateStringList( 20, true, true, true, 100000 )
+    def static randMap = RandomStringGen.generateDataSetFromSet( 8, true, false, true, 100000 )
+    def static randList = RandomStringGen.generateStringList( 8, true, false, true, 100000 )
 
     def static testFourTree( message ) {
 
