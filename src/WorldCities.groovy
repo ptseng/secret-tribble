@@ -20,6 +20,14 @@ class WorldCities extends DataGen {
 
         public int compareTo(Coordinates<K,J> that) {
 
+            def cmp = this.lat.toInteger().compareTo( that.lat.toInteger() )
+
+            if( cmp == 0 ) {
+                cmp = this.lon.toInteger().compareTo( that.lon.toInteger() )
+            }
+
+            cmp
+/*
             if( lat == (that.lat as Integer) && lon == (that.lon as Integer) ) {
                 return 0
             }
@@ -29,7 +37,7 @@ class WorldCities extends DataGen {
             else {
                 return 1
             }
-
+*/
         }
 
         @Override
