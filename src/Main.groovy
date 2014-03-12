@@ -12,7 +12,7 @@ class Main {
     def static sortedRandMap = new ArrayList(randMap).sort( { it.getKey() } )
     def static sortedRealCityCoordinates = new ArrayList(realCityCoordinates).sort( { it.getKey() } )
 
-
+    // BST Testing
     def static testSimpleBinaryTree( message ) {
 
         def tree1 = new SimpleBinaryTree<String,String>()
@@ -31,23 +31,23 @@ class Main {
         println message
         BSTTreeSuite( tree1, engDict, engBook, "Unsorted Dictionary", "Book" )
         println()
-        //BSTTreeSuite( tree1, smallSortedEngDict, engBook, "Small Sorted Dictionary", "Book" )
+        BSTTreeSuite( tree1, smallSortedEngDict, engBook, "Small Sorted Dictionary", "Book" )
         println()
         BSTTreeSuite( tree1, engDict, randList, "Unsorted Dictionary", "Random" )
         println()
-        //BSTTreeSuite( tree1, smallSortedEngDict, randList, "Small Sorted Dictionary", "Random" )
+        BSTTreeSuite( tree1, smallSortedEngDict, randList, "Small Sorted Dictionary", "Random" )
         println()
         BSTTreeSuite( tree2, realCityCoordinates, randomCoordinates, "Unsorted GPS", "Random" )
         println()
-        //BSTTreeSuite( tree2, sortedRealCityCoordinates, randomCoordinates, "Sorted GPS", "Random" )
+        BSTTreeSuite( tree2, sortedRealCityCoordinates, randomCoordinates, "Sorted GPS", "Random" )
         println()
         BSTTreeSuite( tree3, randMap, engBook, "Unsorted Random", "Book" )
         println()
-        //BSTTreeSuite( tree1, smallSortedRandMap, engBook, "Small Sorted Random", "Book" )
+        BSTTreeSuite( tree1, smallSortedRandMap, engBook, "Small Sorted Random", "Book" )
         println()
         BSTTreeSuite( tree3, randMap, randList, "Unsorted Random", "Random" )
         println()
-        //BSTTreeSuite( tree1, smallSortedRandMap, randList, "Small Sorted Random", "Random" )
+        BSTTreeSuite( tree1, smallSortedRandMap, randList, "Small Sorted Random", "Random" )
         println()
 
     }
@@ -238,9 +238,13 @@ class Main {
 
         def inputSize = terms.size()
         def rates = HashHitRate( tablehashcode, terms, inputSize )
+        def dataKeys = new ArrayList<String>()
+        data.each { dataKeys.add( it.getKey() ) }
+        def longestChain = HashHitRate( tablehashcode, dataKeys, inputSize )
 
         treePrintResults( "Results for ${name1} HashTable using .hashcode() with ${name2} Queries: ", rates, inputSize )
-        println "\tCollisions:          ${ tablehashcode.NumberOfCollisions() }"
+        println "\tCollisions:         ${ tablehashcode.NumberOfCollisions() }"
+        println "\tLongest Chain:      ${longestChain.get(3)}"
 
         def pass = 0
         def hashClosure = { terms.each { tablehashcode.ContainsKey( it ) } }
@@ -252,14 +256,16 @@ class Main {
         }
 
         tablehashcode.Clear()
-
         data.each { tablecrypt.Insert( it.key, it.value ) }
 
         println()
         inputSize = terms.size()
         rates = HashHitRate( tablecrypt, terms, inputSize )
+        longestChain = HashHitRate( tablecrypt, dataKeys, inputSize )
+
         treePrintResults( "Results for ${name1} HashTable using cryptographic hash with ${name2} Queries: ", rates, inputSize )
-        println "\tCollisions:          ${ tablecrypt.NumberOfCollisions() }"
+        println "\tCollisions:         ${ tablecrypt.NumberOfCollisions() }"
+        println "\tLongest Chain:      ${longestChain.get(3)}"
 
         pass = 0
         hashClosure = { terms.each { tablecrypt.ContainsKey( it ) } }
