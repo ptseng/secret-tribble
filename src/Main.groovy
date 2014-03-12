@@ -12,7 +12,7 @@ class Main {
     def static sortedRandMap = new ArrayList(randMap).sort( { it.getKey() } )
     def static sortedRealCityCoordinates = new ArrayList(realCityCoordinates).sort( { it.getKey() } )
 
-    // SimpleBinaryTree Testing
+
     def static testSimpleBinaryTree( message ) {
 
         def tree1 = new SimpleBinaryTree<String,String>()
@@ -31,23 +31,23 @@ class Main {
         println message
         BSTTreeSuite( tree1, engDict, engBook, "Unsorted Dictionary", "Book" )
         println()
-        BSTTreeSuite( tree1, smallSortedEngDict, engBook, "Small Sorted Dictionary", "Book" )
+        //BSTTreeSuite( tree1, smallSortedEngDict, engBook, "Small Sorted Dictionary", "Book" )
         println()
         BSTTreeSuite( tree1, engDict, randList, "Unsorted Dictionary", "Random" )
         println()
-        BSTTreeSuite( tree1, smallSortedEngDict, randList, "Small Sorted Dictionary", "Random" )
+        //BSTTreeSuite( tree1, smallSortedEngDict, randList, "Small Sorted Dictionary", "Random" )
         println()
         BSTTreeSuite( tree2, realCityCoordinates, randomCoordinates, "Unsorted GPS", "Random" )
         println()
-        BSTTreeSuite( tree2, sortedRealCityCoordinates, randomCoordinates, "Sorted GPS", "Random" )
+        //BSTTreeSuite( tree2, sortedRealCityCoordinates, randomCoordinates, "Sorted GPS", "Random" )
         println()
         BSTTreeSuite( tree3, randMap, engBook, "Unsorted Random", "Book" )
         println()
-        BSTTreeSuite( tree1, smallSortedRandMap, engBook, "Small Sorted Random", "Book" )
+        //BSTTreeSuite( tree1, smallSortedRandMap, engBook, "Small Sorted Random", "Book" )
         println()
         BSTTreeSuite( tree3, randMap, randList, "Unsorted Random", "Random" )
         println()
-        BSTTreeSuite( tree1, smallSortedRandMap, randList, "Small Sorted Random", "Random" )
+        //BSTTreeSuite( tree1, smallSortedRandMap, randList, "Small Sorted Random", "Random" )
         println()
 
     }
@@ -55,13 +55,14 @@ class Main {
     def private static BSTTreeSuite( tree, data, terms, name1, name2 ) {
 
         tree.clearTree()
-
         data.each{ tree.insert(it.key, it.value)}
-        println tree.maxDepth() + " Max Depth"
 
+        def height = tree.maxDepth()
         def inputSize = terms.size()
         def rates = BSTtreeHitRate( tree, terms, inputSize )
+
         treePrintResults( "Results for ${name1} Tree with ${name2} Queries:", rates, inputSize )
+        println "\tHeight:             ${height}"
 
         def pass = 0
         def treeClosure = { terms.each { tree.lookup(it) } }
@@ -138,9 +139,13 @@ class Main {
 
         tree.clearTree()
         tree.insert( data )
+
         def inputSize = terms.size()
         def rates = treeHitRate( tree, terms, inputSize )
+        def height = tree.height()
+
         treePrintResults( "Results for ${name1} Tree with ${name2} Queries:", rates, inputSize )
+        println "\tHeight:             ${height}"
 
         def pass = 0
         def treeClosure = { terms.each { tree.find(it) } }
@@ -204,23 +209,23 @@ class Main {
 
         println message
 
-        HashTableTestSuite( htdicthashcode, htdictcrypt, engDict, engBook, "Dictionary", "Book" )
+        HashTableTestSuite( htdicthashcode, htdictcrypt, engDict, engBook, "Unsorted Dictionary", "Book" )
         println()
         HashTableTestSuite( htdicthashcode, htdictcrypt, sortedEngDict, engBook, "Sorted Dictionary", "Book" )
         println()
-        HashTableTestSuite( htdicthashcode, htdictcrypt, engDict, randList, "Dictionary", "Random" )
+        HashTableTestSuite( htdicthashcode, htdictcrypt, engDict, randList, "Unsorted Dictionary", "Random" )
         println()
         HashTableTestSuite( htdicthashcode, htdictcrypt, sortedEngDict, randList, "Sorted Dictionary", "Random" )
         println()
-        HashTableTestSuite( htcityhashcode, htcitycrypt, realCityCoordinates, randomCoordinates, "GPS", "Random" )
+        HashTableTestSuite( htcityhashcode, htcitycrypt, realCityCoordinates, randomCoordinates, "Unsorted GPS", "Random" )
         println()
         HashTableTestSuite( htcityhashcode, htcitycrypt, sortedRealCityCoordinates, randomCoordinates, "Sorted GPS", "Random" )
         println()
-        HashTableTestSuite( htrandhashcode, htrandcrypt, randMap, engBook, "Random", "Book" )
+        HashTableTestSuite( htrandhashcode, htrandcrypt, randMap, engBook, "Unsorted Random", "Book" )
         println()
         HashTableTestSuite( htrandhashcode, htrandcrypt, sortedRandMap, engBook, "Sorted Random", "Book" )
         println()
-        HashTableTestSuite( htrandhashcode, htrandcrypt, randMap, randList, "Random", "Random" )
+        HashTableTestSuite( htrandhashcode, htrandcrypt, randMap, randList, "Unsorted Random", "Random" )
         println()
         HashTableTestSuite( htrandhashcode, htrandcrypt, sortedRandMap, randList, "Sorted Random", "Random" )
         println()
@@ -231,12 +236,11 @@ class Main {
     {
         data.each { tablehashcode.Insert( it.key, it.value ) }
 
-
         def inputSize = terms.size()
         def rates = HashHitRate( tablehashcode, terms, inputSize )
-        treePrintResults( "Results for ${name1} HashTable using .hashcode() with ${name2} Queries: ", rates, inputSize )
-        println"\tCollisions:    ${ tablehashcode.NumberOfCollisions() }"
 
+        treePrintResults( "Results for ${name1} HashTable using .hashcode() with ${name2} Queries: ", rates, inputSize )
+        println "\tCollisions:          ${ tablehashcode.NumberOfCollisions() }"
 
         def pass = 0
         def hashClosure = { terms.each { tablehashcode.ContainsKey( it ) } }
@@ -246,6 +250,7 @@ class Main {
             data.each { tablehashcode.Insert( it.key, it.value ) }
             DataGen.timeit( "\tTime for pass ${pass}", 1, 5, 3, hashClosure )
         }
+
         tablehashcode.Clear()
 
         data.each { tablecrypt.Insert( it.key, it.value ) }
@@ -254,7 +259,7 @@ class Main {
         inputSize = terms.size()
         rates = HashHitRate( tablecrypt, terms, inputSize )
         treePrintResults( "Results for ${name1} HashTable using cryptographic hash with ${name2} Queries: ", rates, inputSize )
-        println"\tCollisions:    ${ tablecrypt.NumberOfCollisions() }"
+        println "\tCollisions:          ${ tablecrypt.NumberOfCollisions() }"
 
         pass = 0
         hashClosure = { terms.each { tablecrypt.ContainsKey( it ) } }
@@ -311,11 +316,11 @@ class Main {
 
     public static void main( String [] args ) {
 
-        testSimpleBinaryTree("-------- BST  TREE TESTING --------")
+        testSimpleBinaryTree( "-------- BST TESTING --------" )
         println()
         testFourTree( "-------- 2-3-4 TREE TESTING --------" )
         println()
-        TestHashTable("-------- HASH TABLE TESTING --------")
+        TestHashTable( "-------- HASH TABLE TESTING --------" )
         println()
 
     }
