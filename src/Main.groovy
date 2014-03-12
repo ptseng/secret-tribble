@@ -29,26 +29,26 @@ class Main {
         }
 
         println message
-/*        BSTTreeSuite( tree1, engDict, engBook, "Unsorted Dictionary", "Book" )
+        BSTTreeSuite( tree1, engDict, engBook, "Unsorted Dictionary", "Book" )
         println()
         BSTTreeSuite( tree1, smallSortedEngDict, engBook, "Small Sorted Dictionary", "Book" )
         println()
         BSTTreeSuite( tree1, engDict, randList, "Unsorted Dictionary", "Random" )
         println()
         BSTTreeSuite( tree1, smallSortedEngDict, randList, "Small Sorted Dictionary", "Random" )
-        println()*/
+        println()
         BSTTreeSuite( tree2, realCityCoordinates, randomCoordinates, "Unsorted GPS", "Random" )
         println()
         BSTTreeSuite( tree2, sortedRealCityCoordinates, randomCoordinates, "Sorted GPS", "Random" )
         println()
-/*        BSTTreeSuite( tree3, randMap, engBook, "Unsorted Random", "Book" )
+        BSTTreeSuite( tree3, randMap, engBook, "Unsorted Random", "Book" )
         println()
         BSTTreeSuite( tree1, smallSortedRandMap, engBook, "Small Sorted Random", "Book" )
         println()
         BSTTreeSuite( tree3, randMap, randList, "Unsorted Random", "Random" )
         println()
         BSTTreeSuite( tree1, smallSortedRandMap, randList, "Small Sorted Random", "Random" )
-        println()*/
+        println()
 
     }
 
@@ -110,26 +110,26 @@ class Main {
         def tree3 = new FourTree<String,String>()
 
         println message
-/*        fourTreeSuite( tree1, engDict, engBook, "Unsorted Dictionary", "Book" )
+        fourTreeSuite( tree1, engDict, engBook, "Unsorted Dictionary", "Book" )
         println()
         fourTreeSuite( tree1, sortedEngDict, engBook, "Sorted Dictionary", "Book" )
         println()
         fourTreeSuite( tree1, engDict, randList, "Unsorted Dictionary", "Random" )
         println()
         fourTreeSuite( tree1, sortedEngDict, randList, "Sorted Dictionary", "Random" )
-        println()*/
+        println()
         fourTreeSuite( tree2, realCityCoordinates, randomCoordinates, "Unsorted GPS", "Random" )
         println()
         fourTreeSuite( tree2, sortedRealCityCoordinates, randomCoordinates, "Sorted GPS", "Random" )
         println()
-/*        fourTreeSuite( tree3, randMap, engBook, "Unsorted Random", "Book" )
+        fourTreeSuite( tree3, randMap, engBook, "Unsorted Random", "Book" )
         println()
         fourTreeSuite( tree3, sortedRandMap, engBook, "Sorted Random", "Book" )
         println()
         fourTreeSuite( tree3, randMap, randList, "Unsorted Random", "Random" )
         println()
         fourTreeSuite( tree3, sortedRandMap, randList, "Sorted Random", "Random" )
-        println()*/
+        println()
 
     }
 
@@ -202,7 +202,7 @@ class Main {
         def htrandcrypt = new HashTable<String, String>( 2, randMap.size()*2 )
 
         println message
-/*
+
         HashTableTestSuite( htdicthashcode, htdictcrypt, engDict, engBook, "Dictionary", "Book" )
         println()
         HashTableTestSuite( htdicthashcode, htdictcrypt, sortedEngDict, engBook, "Sorted Dictionary", "Book" )
@@ -210,19 +210,19 @@ class Main {
         HashTableTestSuite( htdicthashcode, htdictcrypt, engDict, randList, "Dictionary", "Random" )
         println()
         HashTableTestSuite( htdicthashcode, htdictcrypt, sortedEngDict, randList, "Sorted Dictionary", "Random" )
-        println()*/
+        println()
         HashTableTestSuite( htcityhashcode, htcitycrypt, realCityCoordinates, randomCoordinates, "GPS", "Random" )
         println()
         HashTableTestSuite( htcityhashcode, htcitycrypt, sortedRealCityCoordinates, randomCoordinates, "Sorted GPS", "Random" )
         println()
-/*        HashTableTestSuite( htrandhashcode, htrandcrypt, randMap, engBook, "Random", "Book" )
+        HashTableTestSuite( htrandhashcode, htrandcrypt, randMap, engBook, "Random", "Book" )
         println()
         HashTableTestSuite( htrandhashcode, htrandcrypt, sortedRandMap, engBook, "Sorted Random", "Book" )
         println()
         HashTableTestSuite( htrandhashcode, htrandcrypt, randMap, randList, "Random", "Random" )
         println()
         HashTableTestSuite( htrandhashcode, htrandcrypt, sortedRandMap, randList, "Sorted Random", "Random" )
-        println()*/
+        println()
 
     }
 
