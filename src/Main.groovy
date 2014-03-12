@@ -57,6 +57,7 @@ class Main {
         tree.clearTree()
 
         data.each{ tree.insert(it.key, it.value)}
+        println tree.maxDepth() + " Max Depth"
 
         def inputSize = terms.size()
         def rates = BSTtreeHitRate( tree, terms, inputSize )
